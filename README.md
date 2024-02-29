@@ -6,4 +6,4 @@ Welcome to the developer repository for the cool lil robot collectathon game! :D
 
 2: Once created, clone the repository into the folder that you have made your Unity project in
 
-3: Hopefully you should be good to go!
+3: Hopefully, you should be good to go!
