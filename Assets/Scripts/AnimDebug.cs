@@ -8,9 +8,10 @@ public class AnimDebug : MonoBehaviour
     public float speed;
     public bool isOnGround;
     public bool holdingRoll;
-    public float xInput;
-    public float yInput;
+    private float xInput;
+    private float yInput;
     private Rigidbody rb;
+    public float jumpForce;
 
     // Start is called before the first frame update
     void Start()
@@ -34,14 +35,7 @@ public class AnimDebug : MonoBehaviour
             speed = yInput * -5;
         }
         anim.SetFloat("Speed", speed);
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            rb.AddForce(Vector3.up * 5, ForceMode.Impulse);
-            anim.SetTrigger("JumpTrig");
-            isOnGround = false;
-            anim.SetBool("onGround", false);
-            Debug.Log("JUMPING");
-        }
+
         if (Input.GetKey(KeyCode.LeftShift))
         {
             anim.SetBool("HoldingRoll", true);
@@ -49,14 +43,6 @@ public class AnimDebug : MonoBehaviour
         if (!Input.GetKey(KeyCode.LeftShift))
         {
             anim.SetBool("HoldingRoll", false);
-        }
-    }
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isOnGround = true;
-            anim.SetBool("onGround", true);
         }
     }
 }
