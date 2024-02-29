@@ -1,2 +1,2 @@
-# mecho-dev
-The development repo for "Mecho - Use The World".
+# Mecho - Use The World
+![alt text](https://https://github.com/cocoasprinkle/mecho-dev/main/MechoLogo.png"?raw=true)
