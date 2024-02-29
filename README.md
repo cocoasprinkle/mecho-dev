@@ -1,2 +1,2 @@
-# Mecho - Use The World
-![alt text](https://https://github.com/cocoasprinkle/mecho-dev/main/MechoLogo.png"?raw=true)
+![Logo](MechoLogo.png)
+Welcome to the developer repository for the cool lil robot collectathon game! :D
