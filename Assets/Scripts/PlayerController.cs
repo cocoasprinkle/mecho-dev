@@ -27,18 +27,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool isOnGround;
     [SerializeField] bool rolling;
     [SerializeField] float jumpVel;
-    [SerializeField] bool isCoyote = false;
+    [SerializeField] public float curSpeed;
+    [SerializeField] float velocity;
+    [SerializeField] float xInput;
+    [SerializeField] float yInput;
+
+    [Header("Sounds")]
+    [SerializeField] AudioClip[] jumpSounds;
+    [SerializeField] AudioClip rollSound;
 
     private Rigidbody rb;
+    private AudioSource audSource;
 
     // Used for when floats need to be assigned a null value
     const float ZeroF = 0f;
 
     // Variables relating to player movement and input
-    float curSpeed;
-    float velocity;
-    float xInput;
-    float yInput;
     Vector3 movement;
 
     // Locates the transform values of the camera in the scene
@@ -54,6 +58,7 @@ public class PlayerController : MonoBehaviour
     {
         // Gathers component and transform references needed for variables
         rb = GetComponent<Rigidbody>();
+        audSource = GetComponent<AudioSource>();
         anim = GetComponent<Animator>();
         mainCam = Camera.main.transform;
         freeLook.Follow = transform;
@@ -110,15 +115,16 @@ public class PlayerController : MonoBehaviour
         // Triggers rolling-related code when the roll key (Left Shift) is pressed
         if (Input.GetKey(KeyCode.LeftShift))
         {
+            if (isOnGround && !audSource.isPlaying)
+            {
+                audSource.Stop();
+                audSource.PlayOneShot(rollSound);
+            }
             rolling = true;
         }
         else
         {
             rolling = false;
-        }
-        if (adjustedDirection.magnitude > 0.1f && isOnGround)
-        {
-
         }
     }
     
@@ -135,11 +141,9 @@ public class PlayerController : MonoBehaviour
         {
             performed = true;
             anim.SetTrigger("JumpTrig");
-        }
-        if (Input.GetKey(KeyCode.Space) && isCoyote && !jumpTimer.IsRunning)
-        {
-            performed = true;
-            anim.SetTrigger("JumpTrig");
+            AudioClip jumpClip = jumpSounds[UnityEngine.Random.Range(0, jumpSounds.Length)];
+            audSource.Stop();
+            audSource.PlayOneShot(jumpClip);
         }
         if (performed)
         {
@@ -176,14 +180,6 @@ public class PlayerController : MonoBehaviour
         foreach (var timer in timers)
         {
             timer.Tick(Time.deltaTime);
-        }
-        if (coyoteTime.IsRunning)
-        {
-            isCoyote = true;
-        }
-        if (coyoteTime.IsFinished)
-        {
-            isCoyote = false;
         }
     }
 
@@ -239,7 +235,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         // Check if the angle is too steep.
-        if (angle <= 80f)
+        if (angle <= 45f)
         {
             isOnGround = true;
         }
