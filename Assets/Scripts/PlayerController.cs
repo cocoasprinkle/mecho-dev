@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float rotSpeed = 15f;
     [SerializeField] float smoothTime = 0.2f;
     [SerializeField] float coyoteDuration = 0.2f;
+    [SerializeField] float inclineLimit = 80f;
 
     [Header("Jump Settings")]
     [SerializeField] float jumpForce = 7f;
@@ -31,13 +32,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float velocity;
     [SerializeField] float xInput;
     [SerializeField] float yInput;
+    [SerializeField] AnimatorStateInfo curClipName;
+    
 
     [Header("Sounds")]
     [SerializeField] AudioClip[] jumpSounds;
     [SerializeField] AudioClip rollSound;
+    private AudioClip noAudio;
 
     private Rigidbody rb;
     private AudioSource audSource;
+    private AnimatorClipInfo curAnimInfo;
+    private bool canPlayJump;
 
     // Used for when floats need to be assigned a null value
     const float ZeroF = 0f;
@@ -71,6 +77,7 @@ public class PlayerController : MonoBehaviour
         jumpTimer = new CountdownTimer(jumpDuration);
         coyoteTime = new CountdownTimer(coyoteDuration);
         timers = new List<Timer>(2) { jumpTimer, coyoteTime };
+        audSource.clip = noAudio;
 
     }
 
@@ -80,7 +87,7 @@ public class PlayerController : MonoBehaviour
         HandleAnimator();
         xInput = Input.GetAxis("Horizontal");
         yInput = Input.GetAxis("Vertical");
-        movement = new Vector3(xInput, 0f, yInput);
+        curClipName = anim.GetCurrentAnimatorStateInfo(0);
     }
 
     // FixedUpdate is called at a fixed rate
@@ -101,6 +108,7 @@ public class PlayerController : MonoBehaviour
     // HandleMovement is largely responsible for calling movement voids when the adjustedDirection variable, declared in the void, has a magnitude greater than 0
     void HandleMovement()
     {
+        movement = new Vector3(xInput, 0f, yInput).normalized;
         var adjustedDirection = Quaternion.AngleAxis(mainCam.eulerAngles.y, Vector3.up) * movement;
         if (adjustedDirection.magnitude > ZeroF)
         {
@@ -113,20 +121,27 @@ public class PlayerController : MonoBehaviour
             SmoothSpeed(ZeroF);
         }
         // Triggers rolling-related code when the roll key (Left Shift) is pressed
-        if (Input.GetKey(KeyCode.LeftShift))
+        /* if (Input.GetKey(KeyCode.LeftShift) && isOnGround)
         {
             if (isOnGround && !audSource.isPlaying)
             {
                 audSource.Stop();
+                audSource.clip = rollSound;
                 audSource.PlayOneShot(rollSound);
             }
             rolling = true;
         }
-        else
+        else if (!Input.GetKey(KeyCode.LeftShift) && audSource.clip == rollSound)
         {
             rolling = false;
+            audSource.clip = noAudio;
+            audSource.Stop();
         }
-    }
+        else if (!isOnGround)
+        {
+            rolling = false;
+        }*/
+    } 
     
     // HandleJump handles all jump-related functions, controlling the jump's velocity overtime, stopping the player from jumping in midair, manipulating timers and changing the Rigidbody's velocity to match the jump velocity on the y axis
     void HandleJump()
@@ -141,13 +156,14 @@ public class PlayerController : MonoBehaviour
         {
             performed = true;
             anim.SetTrigger("JumpTrig");
-            AudioClip jumpClip = jumpSounds[UnityEngine.Random.Range(0, jumpSounds.Length)];
-            audSource.Stop();
-            audSource.PlayOneShot(jumpClip);
         }
         if (performed)
         {
             jumpTimer.Start();
+            AudioClip jumpClip = jumpSounds[UnityEngine.Random.Range(0, jumpSounds.Length)];
+            audSource.clip = jumpClip;
+            audSource.Stop();
+            audSource.PlayOneShot(jumpClip);
         }
         else if (!performed && jumpTimer.IsRunning)
         {
@@ -235,9 +251,10 @@ public class PlayerController : MonoBehaviour
             }
         }
         // Check if the angle is too steep.
-        if (angle <= 45f)
+        if (angle <= inclineLimit)
         {
             isOnGround = true;
+            canPlayJump = true;
         }
         else
         {
