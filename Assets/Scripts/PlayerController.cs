@@ -152,7 +152,7 @@ public class PlayerController : MonoBehaviour
         {
             jumpVel = ZeroF;
         }
-        if (Input.GetKey(KeyCode.Space) && isOnGround && !jumpTimer.IsRunning)
+        if (Input.GetButton("Jump") && isOnGround && !jumpTimer.IsRunning)
         {
             performed = true;
             anim.SetTrigger("JumpTrig");
@@ -226,7 +226,7 @@ public class PlayerController : MonoBehaviour
     // HandleAnimator is responsible for setting the values of Animator booleans and floats to be relative to corresponding variables in the script
     void HandleAnimator()
     {
-        anim.SetFloat("Speed", curSpeed);
+        anim.SetFloat("Speed", rb.velocity.magnitude);
         anim.SetBool("onGround", isOnGround);
         anim.SetBool("HoldingRoll", rolling);
     }
