@@ -111,6 +111,7 @@ public class PlayerController : MonoBehaviour
     void HandleMovement()
     {
         movement = new Vector3(xInput, 0f, yInput);
+        // Keyboard: movement = new Vector3(xInput, 0f, yInput).normalized;
         var adjustedDirection = Quaternion.AngleAxis(mainCam.eulerAngles.y, Vector3.up) * movement;
         if (adjustedDirection.magnitude > ZeroF)
         {
