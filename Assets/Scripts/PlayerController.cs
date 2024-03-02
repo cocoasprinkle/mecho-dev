@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
     private AudioSource audSource;
     private AnimatorClipInfo curAnimInfo;
     private bool canPlayJump;
+    private float magnitude;
 
     // Used for when floats need to be assigned a null value
     const float ZeroF = 0f;
@@ -108,7 +109,7 @@ public class PlayerController : MonoBehaviour
     // HandleMovement is largely responsible for calling movement voids when the adjustedDirection variable, declared in the void, has a magnitude greater than 0
     void HandleMovement()
     {
-        movement = new Vector3(xInput, 0f, yInput).normalized;
+        movement = new Vector3(xInput, 0f, yInput);
         var adjustedDirection = Quaternion.AngleAxis(mainCam.eulerAngles.y, Vector3.up) * movement;
         if (adjustedDirection.magnitude > ZeroF)
         {
@@ -226,7 +227,7 @@ public class PlayerController : MonoBehaviour
     // HandleAnimator is responsible for setting the values of Animator booleans and floats to be relative to corresponding variables in the script
     void HandleAnimator()
     {
-        anim.SetFloat("Speed", rb.velocity.magnitude);
+        anim.SetFloat("Speed", curSpeed);
         anim.SetBool("onGround", isOnGround);
         anim.SetBool("HoldingRoll", rolling);
     }
