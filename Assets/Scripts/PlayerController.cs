@@ -43,8 +43,6 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private AudioSource audSource;
     private AnimatorClipInfo curAnimInfo;
-    private bool canPlayJump;
-    private float magnitude;
 
     // Used for when floats need to be assigned a null value
     const float ZeroF = 0f;
@@ -79,7 +77,10 @@ public class PlayerController : MonoBehaviour
         coyoteTime = new CountdownTimer(coyoteDuration);
         timers = new List<Timer>(2) { jumpTimer, coyoteTime };
         audSource.clip = noAudio;
-
+        //Stops the cursor from leaving the game window and makes it invisible
+        
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = false;
     }
 
     // Update is called once per frame
@@ -255,7 +256,6 @@ public class PlayerController : MonoBehaviour
         if (angle <= inclineLimit)
         {
             isOnGround = true;
-            canPlayJump = true;
         }
         else
         {
