@@ -101,9 +101,9 @@ public class PlayerController : MonoBehaviour
     }
 
     // HandleHorizontalMovement changes the direction and velocity of the player when turning
-    void HandleHorizontalMovement(Vector3 adjustedDirection)
+    void HandleHorizontalMovement(Vector3 adjustedDirection, float mag)
     {
-        Vector3 velocity = adjustedDirection * maxSpeed * Time.fixedDeltaTime;
+        Vector3 velocity = adjustedDirection * mag * maxSpeed * Time.fixedDeltaTime;
         rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
     }
 
@@ -113,10 +113,15 @@ public class PlayerController : MonoBehaviour
         movement = new Vector3(xInput, 0f, yInput);
         // Keyboard: movement = new Vector3(xInput, 0f, yInput).normalized;
         var adjustedDirection = Quaternion.AngleAxis(mainCam.eulerAngles.y, Vector3.up) * movement;
+
+        // save current magnitude for correct normalisation
+        float mag = adjustedDirection.magnitude;
+        adjustedDirection.Normalize();
+        
         if (adjustedDirection.magnitude > ZeroF)
         {
             HandleRot(adjustedDirection);
-            HandleHorizontalMovement(adjustedDirection);
+            HandleHorizontalMovement(adjustedDirection, mag);
             SmoothSpeed(adjustedDirection.magnitude);
         }
         else
