@@ -116,6 +116,7 @@ public class PlayerController : MonoBehaviour
 
         // save current magnitude for correct normalisation
         float mag = adjustedDirection.magnitude;
+        mag = Mathf.Clamp01(mag);
         adjustedDirection.Normalize();
         
         if (adjustedDirection.magnitude > ZeroF)
