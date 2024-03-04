@@ -15,8 +15,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float maxSpeed = 5f;
     [SerializeField] float rotSpeed = 15f;
     [SerializeField] float smoothTime = 0.2f;
-    [SerializeField] float coyoteDuration = 0.2f;
+    [SerializeField] float coyoteDuration = 0.1f;
     [SerializeField] float inclineLimit = 80f;
+    [SerializeField] LayerMask groundLayer;
 
     [Header("Jump Settings")]
     [SerializeField] float jumpForce = 7f;
@@ -26,6 +27,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Monitor Vars")]
     [SerializeField] bool isOnGround;
+    [SerializeField] bool performedJump = false;
+    [SerializeField] bool holdingJump = false;
     [SerializeField] bool rolling;
     [SerializeField] float jumpVel;
     [SerializeField] public float curSpeed;
@@ -33,7 +36,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float xInput;
     [SerializeField] float yInput;
     [SerializeField] AnimatorStateInfo curClipName;
-    
 
     [Header("Sounds")]
     [SerializeField] AudioClip[] jumpSounds;
@@ -111,6 +113,7 @@ public class PlayerController : MonoBehaviour
     void HandleMovement()
     {
         movement = new Vector3(xInput, 0f, yInput);
+        
         // Keyboard: movement = new Vector3(xInput, 0f, yInput).normalized;
         var adjustedDirection = Quaternion.AngleAxis(mainCam.eulerAngles.y, Vector3.up) * movement;
         if (adjustedDirection.magnitude > ZeroF)
@@ -124,7 +127,7 @@ public class PlayerController : MonoBehaviour
             SmoothSpeed(ZeroF);
         }
         // Triggers rolling-related code when the roll key (Left Shift) is pressed
-        /* if (Input.GetKey(KeyCode.LeftShift) && isOnGround)
+        if (Input.GetKey(KeyCode.LeftShift) && isOnGround)
         {
             if (isOnGround && !audSource.isPlaying)
             {
@@ -143,32 +146,63 @@ public class PlayerController : MonoBehaviour
         else if (!isOnGround)
         {
             rolling = false;
-        }*/
-    } 
+        }
+    }
+
+    private Vector3 AdjustVelocityToSlope(Vector3 velocity)
+    {
+        Debug.Log("this was called lmao");
+        var ray = new Ray(transform.position, Vector3.down);
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, 0.75f))
+        {
+            var slopeRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+            var adjustedVelocity = slopeRotation * velocity;
+            Debug.Log(adjustedVelocity);
+            if (adjustedVelocity.y < 0)
+            {
+                Debug.Log("ERMMM ADJUSTED!");
+                return adjustedVelocity; 
+            }
+        }
+        Debug.Log("not ADJUSTED!");
+        return velocity;
+    }
     
     // HandleJump handles all jump-related functions, controlling the jump's velocity overtime, stopping the player from jumping in midair, manipulating timers and changing the Rigidbody's velocity to match the jump velocity on the y axis
     void HandleJump()
     {
-        bool performed = false;
 
         if (!jumpTimer.IsRunning && isOnGround)
         {
             jumpVel = ZeroF;
+            jumpTimer.Stop();
         }
-        if (Input.GetButton("Jump") && isOnGround && !jumpTimer.IsRunning)
+        if (Input.GetButton("Jump"))
         {
-            performed = true;
-            anim.SetTrigger("JumpTrig");
+            holdingJump = true;
         }
-        if (performed)
+        else
+        {
+            holdingJump = false;
+        }
+        if (holdingJump && isOnGround && !jumpTimer.IsRunning)
+        {
+            performedJump = true;
+        }
+        else
+        {
+            performedJump = false;
+        }
+        if (performedJump)
         {
             jumpTimer.Start();
+            anim.SetTrigger("JumpTrig");
             AudioClip jumpClip = jumpSounds[UnityEngine.Random.Range(0, jumpSounds.Length)];
             audSource.clip = jumpClip;
             audSource.Stop();
             audSource.PlayOneShot(jumpClip);
         }
-        else if (!performed && jumpTimer.IsRunning)
+        else if (!holdingJump && jumpTimer.IsRunning)
         {
             jumpTimer.Stop();
         }
@@ -267,9 +301,8 @@ public class PlayerController : MonoBehaviour
     // OnCollsionExit's purpose is to set the "isOnGround" variable to false if the player is not colliding with any objects
     void OnCollisionExit(Collision collision)
     {
-        isOnGround = false;
+        isOnGround = false;    
     }
-}
 
 // This abstract class handles all timer logic, allowing for timers to be invoked and controlled by the rest of the script (courtesy of "git-amend", a YouTuber whose tutorials have been very helpful)
 public abstract class Timer
@@ -359,4 +392,5 @@ public class StopwatchTimer : Timer
     public void Reset() => Time = 0;
 
     public float GetTime() => Time;
+}
 }
