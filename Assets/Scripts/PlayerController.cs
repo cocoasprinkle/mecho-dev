@@ -399,7 +399,4 @@ public class StopwatchTimer : Timer
 
     public float GetTime() => Time;
 }
-<<<<<<< HEAD
 }
-=======
->>>>>>> a85bab34fa0c1c7d39fd15328ad186792fe60c03
