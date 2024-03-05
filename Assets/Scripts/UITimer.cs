@@ -6,7 +6,7 @@ using System;
 
 public class UITimer : MonoBehaviour
 {
-    [SerializeField] bool timerActive;
+    [SerializeField] public bool timerActive;
     [SerializeField] float curTime;
     [SerializeField] TMP_Text text;
 

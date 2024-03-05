@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Cinemachine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -54,6 +55,7 @@ public class PlayerController : MonoBehaviour
     private AnimatorClipInfo curAnimInfo;
     float velocity;
     float diveDuration = 0.5f;
+    UITimer timer;
 
     // Used for when floats need to be assigned a null value
     const float ZeroF = 0f;
@@ -80,6 +82,7 @@ public class PlayerController : MonoBehaviour
         mainCam = Camera.main.transform;
         freeLook.Follow = transform;
         freeLook.LookAt = transform;
+        timer = GameObject.Find("Time").GetComponent<UITimer>();
 
         // Sets up the position and direction for the free-look camera, relative to the player
         freeLook.OnTargetObjectWarped(transform, transform.position - freeLook.transform.position - Vector3.forward);
@@ -112,6 +115,11 @@ public class PlayerController : MonoBehaviour
         HandleMovement();
         HandleTimers();
         HandleFootsteps();
+
+        if (Input.GetKey(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 
     // HandleHorizontalMovement changes the direction and velocity of the player when turning
@@ -277,6 +285,14 @@ public class PlayerController : MonoBehaviour
         anim.SetFloat("Speed", curSpeed);
         anim.SetBool("onGround", isOnGround);
         // anim.SetBool("HoldingRoll", rolling);
+    }
+
+    void OnTriggerStay(Collider collision)
+    {
+        if (collision.gameObject.CompareTag("Time End"))
+        {
+            timer.timerActive = false;
+        }
     }
 
     // OnCollisionStay serves as the script's "ground check" by using the Capsule Collider's bounds along with collision-related variables and Vector3 functions

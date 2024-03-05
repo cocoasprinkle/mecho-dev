@@ -7,6 +7,7 @@ TagManager:
   - Ground
   - Grass
   - Metal
+  - Time End
   layers:
   - Default
   - TransparentFX
