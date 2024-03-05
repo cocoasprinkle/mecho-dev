@@ -28,7 +28,9 @@ public class PlayerController : MonoBehaviour
 
     [Header("Monitor Vars")]
     [SerializeField] bool isOnGround;
+    [SerializeField] float jumpCount;
     [SerializeField] bool performedJump = false;
+    [SerializeField] bool hasDoubleJumped = false;
     [SerializeField] bool holdingJump = false;
     [SerializeField] bool performedDive = false;
     [SerializeField] bool canDive = true;
@@ -43,7 +45,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Sounds")]
     [SerializeField] AudioClip[] jumpSounds;
-    [SerializeField] AudioClip rollSound;
+    [SerializeField] AudioClip walkSound;
+    [SerializeField] AudioClip runSound;
     private AudioClip noAudio;
 
     private Rigidbody rb;
@@ -108,6 +111,7 @@ public class PlayerController : MonoBehaviour
         HandleJump();
         HandleMovement();
         HandleTimers();
+        HandleFootsteps();
     }
 
     // HandleHorizontalMovement changes the direction and velocity of the player when turning
@@ -140,27 +144,6 @@ public class PlayerController : MonoBehaviour
         {
             SmoothSpeed(ZeroF);
         }
-        // Triggers rolling-related code when the roll key (Left Shift) is pressed
-        if (Input.GetKey(KeyCode.LeftShift) && isOnGround)
-        {
-            if (isOnGround && !audSource.isPlaying)
-            {
-                audSource.Stop();
-                audSource.clip = rollSound;
-                audSource.PlayOneShot(rollSound);
-            }
-            // rolling = true;
-        }
-        else if (!Input.GetKey(KeyCode.LeftShift) && audSource.clip == rollSound)
-        {
-            // rolling = false;
-            audSource.clip = noAudio;
-            audSource.Stop();
-        }
-        else if (!isOnGround)
-        {
-            // rolling = false;
-        }
     }
 
     private Vector3 AdjustVelocityToSlope(Vector3 velocity)
@@ -185,11 +168,12 @@ public class PlayerController : MonoBehaviour
     // HandleJump handles all jump-related functions, controlling the jump's velocity overtime, stopping the player from jumping in midair, manipulating timers and changing the Rigidbody's velocity to match the jump velocity on the y axis
     void HandleJump()
     {
-
         if (!jumpTimer.IsRunning && isOnGround)
         {
             jumpVel = ZeroF;
+            jumpCount = 0;
             jumpTimer.Stop();
+            hasDoubleJumped = false;
         }
         if (Input.GetButton("Jump"))
         {
@@ -199,7 +183,8 @@ public class PlayerController : MonoBehaviour
         {
             holdingJump = false;
         }
-        if (holdingJump && isOnGround && !jumpTimer.IsRunning)
+
+        if (holdingJump && isOnGround && !jumpTimer.IsRunning || holdingJump && !jumpTimer.IsRunning && jumpCount < 2)
         {
             performedJump = true;
         }
@@ -207,10 +192,16 @@ public class PlayerController : MonoBehaviour
         {
             performedJump = false;
         }
+
         if (performedJump)
         {
+            jumpCount = jumpCount + 1;
             jumpTimer.Start();
             anim.SetTrigger("JumpTrig");
+        }
+        if (jumpTimer.IsRunning && jumpVel < (jumpForce) || jumpTimer.IsRunning && jumpCount == 0)
+        {
+            audSource.loop = false;
             AudioClip jumpClip = jumpSounds[UnityEngine.Random.Range(0, jumpSounds.Length)];
             audSource.clip = jumpClip;
             audSource.Stop();
@@ -219,6 +210,12 @@ public class PlayerController : MonoBehaviour
         else if (!holdingJump && jumpTimer.IsRunning)
         {
             jumpTimer.Stop();
+        }
+
+        if (!holdingJump && !jumpTimer.IsRunning && !hasDoubleJumped && !isOnGround)
+        {
+            jumpCount = 1;
+            hasDoubleJumped = true;
         }
 
         if (jumpTimer.IsRunning)
@@ -316,6 +313,25 @@ public class PlayerController : MonoBehaviour
     void OnCollisionExit(Collision collision)
     {
         isOnGround = false;    
+    }
+
+    void HandleFootsteps()
+    {
+        if (isOnGround && !jumpTimer.IsRunning)
+        {
+            audSource.loop = true;
+            audSource.clip = runSound;
+        }
+
+        if (audSource.clip == walkSound && !audSource.isPlaying || audSource.clip == runSound && !audSource.isPlaying)
+        {
+            audSource.Play();
+        }
+        if (curSpeed < 1 || !isOnGround && !jumpTimer.IsRunning)
+        {
+            audSource.Stop();
+            audSource.clip = noAudio;
+        }
     }
 
 // This abstract class handles all timer logic, allowing for timers to be invoked and controlled by the rest of the script (courtesy of "git-amend", a YouTuber whose tutorials have been very helpful)
