@@ -364,7 +364,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.5, z: -25}
+  m_FollowOffset: {x: 0, y: 2.24417, z: -24.76911}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -820,6 +820,11 @@ PrefabInstance:
         type: 3}
       propertyPath: groundDistance
       value: 0.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3078678129696983308, guid: eb24afaa658d8af49808530380148284,
+        type: 3}
+      propertyPath: normalizeVectors
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3078678129696983308, guid: eb24afaa658d8af49808530380148284,
         type: 3}
@@ -1459,7 +1464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.5, z: -25}
+  m_FollowOffset: {x: 0, y: 2.24417, z: -24.76911}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -1617,7 +1622,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.5, z: -25}
+  m_FollowOffset: {x: 0, y: 2.24417, z: -24.76911}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -1998,7 +2003,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6290373543859799776}
-  m_Material: {fileID: 13400000, guid: 6288681b0bbd2c043b4c71c5d4b18741, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
@@ -2932,7 +2937,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2076850631735334488}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 0.88436127, y: 83.48565, z: -0.045712855}
+  m_LocalPosition: {x: 0.88436127, y: 83.48565, z: 1.8}
   m_LocalScale: {x: 878.7023, y: 803.52515, z: 216.8338}
   m_ConstrainProportionsScale: 0
   m_Children: []

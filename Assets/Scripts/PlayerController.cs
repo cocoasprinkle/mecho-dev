@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float smoothTime = 0.2f;
     [SerializeField] float coyoteDuration = 0.1f;
     [SerializeField] float inclineLimit = 80f;
+    [SerializeField] bool normalizeVectors = true;
     [SerializeField] LayerMask groundLayer;
 
     [Header("Jump Settings")]
@@ -29,10 +30,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool isOnGround;
     [SerializeField] bool performedJump = false;
     [SerializeField] bool holdingJump = false;
-    [SerializeField] bool rolling;
+    [SerializeField] bool performedDive = false;
+    [SerializeField] bool canDive = true;
     [SerializeField] float jumpVel;
+    [SerializeField] float diveForwardForce;
+    [SerializeField] float diveUpwardForce;
+    [SerializeField] float diveUpwardVel;
     [SerializeField] public float curSpeed;
-    [SerializeField] float velocity;
     [SerializeField] float xInput;
     [SerializeField] float yInput;
     [SerializeField] AnimatorStateInfo curClipName;
@@ -45,6 +49,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private AudioSource audSource;
     private AnimatorClipInfo curAnimInfo;
+    float velocity;
+    float diveDuration = 0.5f;
 
     // Used for when floats need to be assigned a null value
     const float ZeroF = 0f;
@@ -58,6 +64,7 @@ public class PlayerController : MonoBehaviour
     // Declares a list of timers, along with timers in that list
     List<Timer> timers;
     CountdownTimer jumpTimer;
+    CountdownTimer diveTimer;
     CountdownTimer coyoteTime;
 
     // Awake is called when the script is activated
@@ -76,6 +83,7 @@ public class PlayerController : MonoBehaviour
 
         // Extra timer declaration
         jumpTimer = new CountdownTimer(jumpDuration);
+        diveTimer = new CountdownTimer(diveDuration);
         coyoteTime = new CountdownTimer(coyoteDuration);
         timers = new List<Timer>(2) { jumpTimer, coyoteTime };
         audSource.clip = noAudio;
@@ -103,29 +111,29 @@ public class PlayerController : MonoBehaviour
     }
 
     // HandleHorizontalMovement changes the direction and velocity of the player when turning
-    void HandleHorizontalMovement(Vector3 adjustedDirection, float mag)
+    void HandleHorizontalMovement(Vector3 adjustedDirection)
     {
-        Vector3 velocity = adjustedDirection * mag * maxSpeed * Time.fixedDeltaTime;
+        Vector3 velocity = adjustedDirection * maxSpeed * Time.fixedDeltaTime;
         rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
     }
 
     // HandleMovement is largely responsible for calling movement voids when the adjustedDirection variable, declared in the void, has a magnitude greater than 0
     void HandleMovement()
     {
-        movement = new Vector3(xInput, 0f, yInput);
-        
-        // Keyboard: movement = new Vector3(xInput, 0f, yInput).normalized;
+        if (normalizeVectors)
+        {
+            movement = new Vector3(xInput, 0f, yInput).normalized;
+        }
+        else
+        {
+            movement = new Vector3(xInput, 0f, yInput);
+        }
         var adjustedDirection = Quaternion.AngleAxis(mainCam.eulerAngles.y, Vector3.up) * movement;
-
-        // save current magnitude for correct normalisation
-        float mag = adjustedDirection.magnitude;
-        mag = Mathf.Clamp01(mag);
-        adjustedDirection.Normalize();
         
         if (adjustedDirection.magnitude > ZeroF)
         {
             HandleRot(adjustedDirection);
-            HandleHorizontalMovement(adjustedDirection, mag);
+            HandleHorizontalMovement(adjustedDirection);
             SmoothSpeed(adjustedDirection.magnitude);
         }
         else
@@ -141,17 +149,17 @@ public class PlayerController : MonoBehaviour
                 audSource.clip = rollSound;
                 audSource.PlayOneShot(rollSound);
             }
-            rolling = true;
+            // rolling = true;
         }
         else if (!Input.GetKey(KeyCode.LeftShift) && audSource.clip == rollSound)
         {
-            rolling = false;
+            // rolling = false;
             audSource.clip = noAudio;
             audSource.Stop();
         }
         else if (!isOnGround)
         {
-            rolling = false;
+            // rolling = false;
         }
     }
 
@@ -271,7 +279,7 @@ public class PlayerController : MonoBehaviour
     {
         anim.SetFloat("Speed", curSpeed);
         anim.SetBool("onGround", isOnGround);
-        anim.SetBool("HoldingRoll", rolling);
+        // anim.SetBool("HoldingRoll", rolling);
     }
 
     // OnCollisionStay serves as the script's "ground check" by using the Capsule Collider's bounds along with collision-related variables and Vector3 functions
