@@ -33,8 +33,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] bool performedJump = false;
     [SerializeField] bool hasDoubleJumped = false;
     [SerializeField] bool holdingJump = false;
-    [SerializeField] bool performedDive = false;
-    [SerializeField] bool canDive = true;
     [SerializeField] float jumpVel;
     [SerializeField] float diveForwardForce;
     [SerializeField] float diveUpwardForce;
