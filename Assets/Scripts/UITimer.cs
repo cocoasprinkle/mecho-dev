@@ -10,15 +10,18 @@ public class UITimer : MonoBehaviour
     [SerializeField] float curTime;
     [SerializeField] TMP_Text text;
 
+    private PlayerController pCon;
+
     void Awake()
     {
         curTime = 0;
+        pCon = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (timerActive)
+        if (timerActive && pCon.canInput)
         {
             StartCoroutine(TimerTick());
         }

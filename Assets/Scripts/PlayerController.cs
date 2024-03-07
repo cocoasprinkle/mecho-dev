@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Cinemachine;
-using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -27,6 +26,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float gravMod = 3f;
 
     [Header("Monitor Vars")]
+    [SerializeField] public bool canInput = false;
     [SerializeField] bool isOnGround;
     [SerializeField] float jumpCount = 2;
     [SerializeField] bool performedJump = false;
@@ -41,13 +41,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] AnimatorStateInfo curClipName;
 
     [Header("Sounds")]
-    [SerializeField] AudioClip[] jumpSounds;
-    [SerializeField] AudioClip walkSound;
+    [SerializeField] AudioClip jumpSound;
     [SerializeField] AudioClip runSound;
     private AudioClip noAudio;
+    public AudioSource raceAudSource;
+    public AudioClip raceStart;
+    public AudioClip raceEnd;
 
     private Rigidbody rb;
     private AudioSource audSource;
+
     private AnimatorClipInfo curAnimInfo;
     float velocity;
     float diveDuration = 0.5f;
@@ -79,6 +82,7 @@ public class PlayerController : MonoBehaviour
         freeLook.Follow = transform;
         freeLook.LookAt = transform;
         timer = GameObject.Find("Time").GetComponent<UITimer>();
+        raceAudSource = GameObject.Find("Main Camera").GetComponent<AudioSource>();
 
         // Sets up the position and direction for the free-look camera, relative to the player
         freeLook.OnTargetObjectWarped(transform, transform.position - freeLook.transform.position - Vector3.forward);
@@ -94,6 +98,15 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
         Application.targetFrameRate = 120;
+        StartCoroutine(StartPauseInputs());
+    }
+
+    IEnumerator StartPauseInputs()
+    {
+        canInput = false;
+        yield return new WaitForSeconds(1);
+        canInput = true;
+        raceAudSource.PlayOneShot(raceStart, 0.3f);
     }
 
     // Update is called once per frame
@@ -109,14 +122,12 @@ public class PlayerController : MonoBehaviour
     // FixedUpdate is called at a fixed rate
     void FixedUpdate()
     {
-        HandleJump();
-        HandleMovement();
-        HandleTimers();
-        HandleFootsteps();
-
-        if (Input.GetKey(KeyCode.R))
+        if (canInput)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            HandleJump();
+            HandleMovement();
+            HandleTimers();
+            HandleFootsteps();
         }
     }
 
@@ -200,10 +211,9 @@ public class PlayerController : MonoBehaviour
             jumpTimer.Start();
             anim.SetTrigger("JumpTrig");
             audSource.loop = false;
-            AudioClip jumpClip = jumpSounds[UnityEngine.Random.Range(0, jumpSounds.Length)];
-            audSource.clip = jumpClip;
+            audSource.clip = jumpSound;
             audSource.Stop();
-            audSource.PlayOneShot(jumpClip);
+            audSource.PlayOneShot(jumpSound);
         }
         else if (!holdingJump && jumpTimer.IsRunning)
         {
@@ -252,6 +262,8 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Time End"))
         {
             timer.timerActive = false;
+            raceAudSource.PlayOneShot(raceEnd, 0.65f);
+            Destroy(collision.gameObject);
         }
     }
 
