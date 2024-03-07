@@ -103,6 +103,7 @@ public class PlayerController : MonoBehaviour
         HandleAnimator();
         xInput = Input.GetAxis("Horizontal");
         yInput = Input.GetAxis("Vertical");
+        movement = new Vector3(xInput, 0f, yInput);
         curClipName = anim.GetCurrentAnimatorStateInfo(0);
     }
 
@@ -120,57 +121,53 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // HandleHorizontalMovement changes the direction and velocity of the player when turning
-    void HandleHorizontalMovement(Vector3 adjustedDirection)
+    public void HandleMovement()
     {
-        Vector3 velocity = adjustedDirection * maxSpeed * Time.fixedDeltaTime;
-        rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
-    }
-
-    // HandleMovement is largely responsible for calling movement voids when the adjustedDirection variable, declared in the void, has a magnitude greater than 0
-    void HandleMovement()
-    {
-        if (normalizeVectors)
-        {
-            movement = new Vector3(xInput, 0f, yInput).normalized;
-        }
-        else
-        {
-            movement = new Vector3(xInput, 0f, yInput);
-        }
+        // Rotate movement direction to match camera rotation
         var adjustedDirection = Quaternion.AngleAxis(mainCam.eulerAngles.y, Vector3.up) * movement;
-        
+
         if (adjustedDirection.magnitude > ZeroF)
         {
-            HandleRot(adjustedDirection);
+            HandleRotation(adjustedDirection);
             HandleHorizontalMovement(adjustedDirection);
             SmoothSpeed(adjustedDirection.magnitude);
         }
         else
         {
             SmoothSpeed(ZeroF);
+
+            // Reset horizontal velocity for a snappy stop
+            rb.velocity = new Vector3(ZeroF, rb.velocity.y, ZeroF);
         }
     }
 
-    private Vector3 AdjustVelocityToSlope(Vector3 velocity)
+    void HandleHorizontalMovement(Vector3 adjustedDirection)
     {
-        Debug.Log("this was called lmao");
-        var ray = new Ray(transform.position, Vector3.down);
-        if (Physics.Raycast(ray, out RaycastHit hitInfo, 0.75f))
-        {
-            var slopeRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
-            var adjustedVelocity = slopeRotation * velocity;
-            Debug.Log(adjustedVelocity);
-            if (adjustedVelocity.y < 0)
-            {
-                Debug.Log("ERMMM ADJUSTED!");
-                return adjustedVelocity; 
-            }
-        }
-        Debug.Log("not ADJUSTED!");
-        return velocity;
+        // Move the player
+        Vector3 velocity = adjustedDirection * (maxSpeed * Time.fixedDeltaTime);
+        rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
     }
-    
+
+    void HandleRotation(Vector3 adjustedDirection)
+    {
+        // Adjust rotation to match movement direction
+        var targetRotation = Quaternion.LookRotation(adjustedDirection);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotSpeed * Time.deltaTime);
+    }
+
+    void SmoothSpeed(float value)
+    {
+        var adjustedDirection = Quaternion.AngleAxis(mainCam.eulerAngles.y, Vector3.up) * movement;
+        if (adjustedDirection.magnitude > 0.1f)
+        {
+            curSpeed = Mathf.SmoothDamp(curSpeed, value, ref velocity, smoothTime);
+        }
+        else
+        {
+            curSpeed = 0;
+        }
+    }
+
     // HandleJump handles all jump-related functions, controlling the jump's velocity overtime, stopping the player from jumping in midair, manipulating timers and changing the Rigidbody's velocity to match the jump velocity on the y axis
     void HandleJump()
     {
@@ -253,30 +250,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // HandleRot rotates the player in the direction of movement
-    void HandleRot(Vector3 adjustedDirection)
-    {
-            var targetRotation = Quaternion.LookRotation(adjustedDirection);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotSpeed * Time.deltaTime);
-            transform.LookAt(transform.position + adjustedDirection);
-    }
-
-    // SmoothSpeed eases the rotation of HandleRot using the SmoothDamp function in Mathf and angle functions in Quaternion
-    float SmoothSpeed(float value)
-    {
-        var adjustedDirection = Quaternion.AngleAxis(mainCam.eulerAngles.y, Vector3.up) * movement;
-        var adjustedMovement = adjustedDirection * (maxSpeed * Time.deltaTime);
-        if (adjustedMovement.magnitude > 0.1f)
-        {
-            curSpeed = Mathf.SmoothDamp(curSpeed, adjustedMovement.magnitude, ref velocity, smoothTime);
-        }
-        else
-        {
-            curSpeed = 0f;
-        }
-        return curSpeed;
-    }
-
     // HandleAnimator is responsible for setting the values of Animator booleans and floats to be relative to corresponding variables in the script
     void HandleAnimator()
     {
@@ -326,7 +299,7 @@ public class PlayerController : MonoBehaviour
     // OnCollsionExit's purpose is to set the "isOnGround" variable to false if the player is not colliding with any objects
     void OnCollisionExit(Collision collision)
     {
-        isOnGround = false;    
+        isOnGround = false;
     }
 
     void HandleFootsteps()
