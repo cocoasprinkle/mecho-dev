@@ -258,8 +258,8 @@ public class PlayerController : MonoBehaviour
     // OnCollisionStay serves as the script's "ground check" by using the Box Collider's bounds along with collision-related variables and Vector3 functions
     void OnCollisionStay(Collision collision)
     {
-        var bottom = GetComponent<BoxCollider>().bounds.center;
-        bottom.y -= GetComponent<BoxCollider>().bounds.extents.y;
+        var bottom = GetComponent<CapsuleCollider>().bounds.center;
+        bottom.y -= GetComponent<CapsuleCollider>().bounds.extents.y;
         float minDist = float.PositiveInfinity;
         float angle = 180f;
         // Find closest point to bottom.
