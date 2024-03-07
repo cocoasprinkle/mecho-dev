@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 230559385276070699}
   - component: {fileID: 230559385276070696}
   - component: {fileID: 230559385276070700}
+  - component: {fileID: 3041524156224561574}
   m_Layer: 0
   m_Name: mecho
   m_TagString: Player
@@ -241,6 +242,20 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 5ed3d3ddc691d8440b3dba4d6a0720f7, type: 3}
   walkSound: {fileID: 0}
   runSound: {fileID: 8300000, guid: a31c2827375691a4bab4055014053d06, type: 3}
+--- !u!136 &3041524156224561574
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1149109891963088284}
+  m_Material: {fileID: 13400000, guid: 6288681b0bbd2c043b4c71c5d4b18741, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 5.0117188
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.2100067, z: 0}
 --- !u!1 &2566763233496182016
 GameObject:
   m_ObjectHideFlags: 0
