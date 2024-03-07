@@ -8,6 +8,7 @@ TagManager:
   - Grass
   - Metal
   - Time End
+  - Item
   layers:
   - Default
   - TransparentFX
