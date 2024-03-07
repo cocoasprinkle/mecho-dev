@@ -18,7 +18,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float smoothTime = 0.2f;
     [SerializeField] float coyoteDuration = 0.1f;
     [SerializeField] float inclineLimit = 80f;
-    [SerializeField] bool normalizeVectors = true;
     [SerializeField] LayerMask groundLayer;
 
     [Header("Jump Settings")]
@@ -29,9 +28,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Monitor Vars")]
     [SerializeField] bool isOnGround;
-    [SerializeField] float jumpCount;
+    [SerializeField] float jumpCount = 2;
     [SerializeField] bool performedJump = false;
-    [SerializeField] bool hasDoubleJumped = false;
     [SerializeField] bool holdingJump = false;
     [SerializeField] float jumpVel;
     [SerializeField] float diveForwardForce;
@@ -95,6 +93,7 @@ public class PlayerController : MonoBehaviour
         
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
+        Application.targetFrameRate = 120;
     }
 
     // Update is called once per frame
@@ -176,7 +175,6 @@ public class PlayerController : MonoBehaviour
             jumpVel = ZeroF;
             jumpCount = 0;
             jumpTimer.Stop();
-            hasDoubleJumped = false;
         }
         if (Input.GetButton("Jump"))
         {
@@ -196,14 +194,11 @@ public class PlayerController : MonoBehaviour
             performedJump = false;
         }
 
-        if (performedJump)
+        if (performedJump && jumpVel <= 1f)
         {
             jumpCount = jumpCount + 1;
             jumpTimer.Start();
             anim.SetTrigger("JumpTrig");
-        }
-        if (jumpTimer.IsRunning && jumpVel < (jumpForce) || jumpTimer.IsRunning && jumpCount == 0)
-        {
             audSource.loop = false;
             AudioClip jumpClip = jumpSounds[UnityEngine.Random.Range(0, jumpSounds.Length)];
             audSource.clip = jumpClip;
@@ -215,15 +210,9 @@ public class PlayerController : MonoBehaviour
             jumpTimer.Stop();
         }
 
-        if (!holdingJump && !jumpTimer.IsRunning && !hasDoubleJumped && !isOnGround)
-        {
-            jumpCount = 1;
-            hasDoubleJumped = true;
-        }
-
         if (jumpTimer.IsRunning)
         {
-            float launchPoint = 0.9f;
+            float launchPoint = 0.5f;
             if (jumpTimer.Progress > launchPoint)
             {
                 // Calculates the decreasing jump velocity using square roots of the maximum height multiplied by 2 and returning the absolute value of the y value of gravity in the project
@@ -266,11 +255,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // OnCollisionStay serves as the script's "ground check" by using the Capsule Collider's bounds along with collision-related variables and Vector3 functions
+    // OnCollisionStay serves as the script's "ground check" by using the Box Collider's bounds along with collision-related variables and Vector3 functions
     void OnCollisionStay(Collision collision)
     {
-        var bottom = GetComponent<CapsuleCollider>().bounds.center;
-        bottom.y -= GetComponent<CapsuleCollider>().bounds.extents.y;
+        var bottom = GetComponent<BoxCollider>().bounds.center;
+        bottom.y -= GetComponent<BoxCollider>().bounds.extents.y;
         float minDist = float.PositiveInfinity;
         float angle = 180f;
         // Find closest point to bottom.
@@ -310,11 +299,11 @@ public class PlayerController : MonoBehaviour
             audSource.clip = runSound;
         }
 
-        if (audSource.clip == walkSound && !audSource.isPlaying || audSource.clip == runSound && !audSource.isPlaying)
+        if (audSource.clip == runSound && !audSource.isPlaying)
         {
             audSource.Play();
         }
-        if (curSpeed < 1 || !isOnGround && !jumpTimer.IsRunning)
+        if (curSpeed < 0.1 || !isOnGround && !jumpTimer.IsRunning)
         {
             audSource.Stop();
             audSource.clip = noAudio;
