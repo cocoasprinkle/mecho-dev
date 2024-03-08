@@ -368,7 +368,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.857448, z: -25.30299}
+  m_FollowOffset: {x: 0, y: 4.018083, z: -26.1858}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -954,7 +954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.857448, z: -25.30299}
+  m_FollowOffset: {x: 0, y: 4.018083, z: -26.1858}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -1997,7 +1997,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.857448, z: -25.30299}
+  m_FollowOffset: {x: 0, y: 4.018083, z: -26.1858}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -2444,7 +2444,7 @@ MonoBehaviour:
   m_CameraRadius: 0.1
   m_Strategy: 0
   m_MaximumEffort: 4
-  m_SmoothingTime: 0
+  m_SmoothingTime: 0.4
   m_Damping: 0
   m_DampingWhenOccluded: 0
   m_OptimalTargetDistance: 0

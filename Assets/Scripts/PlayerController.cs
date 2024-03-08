@@ -106,7 +106,7 @@ public class PlayerController : MonoBehaviour
         canInput = false;
         yield return new WaitForSeconds(1);
         canInput = true;
-        raceAudSource.PlayOneShot(raceStart, 0.3f);
+        raceAudSource.PlayOneShot(raceStart, 0.1f);
     }
 
     // Update is called once per frame
