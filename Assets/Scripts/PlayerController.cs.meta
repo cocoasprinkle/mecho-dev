@@ -3,7 +3,14 @@ guid: 7d1b502b74ef4ad4389bc9d886b2c5e1
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - anim: {instanceID: 0}
+  - freeLook: {instanceID: 0}
+  - jumpSound: {fileID: 8300000, guid: f3fe557aad8ed374c94ff087f546db67, type: 3}
+  - runSound: {fileID: 8300000, guid: a31c2827375691a4bab4055014053d06, type: 3}
+  - raceAudSource: {instanceID: 0}
+  - raceStart: {fileID: 8300000, guid: 901651d908784874b9055e9c00ad83f6, type: 3}
+  - raceEnd: {fileID: 8300000, guid: ab8d07fad2b0b554ea9f3cc17ca13c3f, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

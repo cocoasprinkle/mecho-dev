@@ -93,11 +93,10 @@ public class PlayerController : MonoBehaviour
         coyoteTime = new CountdownTimer(coyoteDuration);
         timers = new List<Timer>(2) { jumpTimer, coyoteTime };
         audSource.clip = noAudio;
-        //Stops the cursor from leaving the game window and makes it invisible
-        
-        Cursor.lockState = CursorLockMode.Confined;
+        //Makes the cursor invisible
+
+        Cursor.lockState = CursorLockMode.None;
         Cursor.visible = false;
-        Application.targetFrameRate = 120;
         StartCoroutine(StartPauseInputs());
     }
 
@@ -106,7 +105,7 @@ public class PlayerController : MonoBehaviour
         canInput = false;
         yield return new WaitForSeconds(1);
         canInput = true;
-        raceAudSource.PlayOneShot(raceStart, 0.1f);
+        raceAudSource.PlayOneShot(raceStart, 0.45f);
     }
 
     // Update is called once per frame
@@ -262,7 +261,7 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("Time End"))
         {
             timer.timerActive = false;
-            raceAudSource.PlayOneShot(raceEnd, 0.65f);
+            raceAudSource.PlayOneShot(raceEnd);
             Destroy(collision.gameObject);
         }
     }
@@ -315,7 +314,7 @@ public class PlayerController : MonoBehaviour
         {
             audSource.Play();
         }
-        if (curSpeed < 0.1 || !isOnGround && !jumpTimer.IsRunning)
+        if (curSpeed < 0.1 && isOnGround || !isOnGround && !jumpTimer.IsRunning && !performedJump)
         {
             audSource.Stop();
             audSource.clip = noAudio;

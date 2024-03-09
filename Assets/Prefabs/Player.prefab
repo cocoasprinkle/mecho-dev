@@ -415,7 +415,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   anim: {fileID: 3168758264553843945}
   freeLook: {fileID: 0}
-  maxSpeed: 3000
+  maxSpeed: 3300
   rotSpeed: 900
   smoothTime: 0.2
   coyoteDuration: 0.1
@@ -440,8 +440,10 @@ MonoBehaviour:
   xInput: 0
   yInput: 0
   jumpSound: {fileID: 8300000, guid: f3fe557aad8ed374c94ff087f546db67, type: 3}
-  walkSound: {fileID: 0}
   runSound: {fileID: 8300000, guid: a31c2827375691a4bab4055014053d06, type: 3}
+  raceAudSource: {fileID: 0}
+  raceStart: {fileID: 0}
+  raceEnd: {fileID: 0}
 --- !u!136 &215898225144198759
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -468,6 +470,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a743de9ddf436fe4d84f40451daa62b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fading: 0
 --- !u!1 &3102458729757717816
 GameObject:
   m_ObjectHideFlags: 0

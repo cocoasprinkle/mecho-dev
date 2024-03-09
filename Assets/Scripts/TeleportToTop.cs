@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TeleportToTop : MonoBehaviour
 {
+    public GameObject teleportToObject;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,7 +16,7 @@ public class TeleportToTop : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            other.gameObject.transform.position = new Vector3 (-251.62f, 250.47f, 124.99f);
+            other.gameObject.transform.position = new Vector3 (teleportToObject.transform.position.x, teleportToObject.transform.position.y, teleportToObject.transform.position.z);
         }
     }
 }
