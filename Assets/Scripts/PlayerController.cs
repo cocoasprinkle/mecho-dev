@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Monitor Vars")]
     [SerializeField] public bool canInput = false;
-    [SerializeField] bool isOnGround;
+    [SerializeField] public bool isOnGround;
     [SerializeField] float jumpCount = 2;
     [SerializeField] bool performedJump = false;
     [SerializeField] bool holdingJump = false;
@@ -39,14 +39,21 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float xInput;
     [SerializeField] float yInput;
     [SerializeField] AnimatorStateInfo curClipName;
+    [SerializeField] public bool noInput;
 
     [Header("Sounds")]
     [SerializeField] AudioClip jumpSound;
-    [SerializeField] AudioClip runSound;
+    [SerializeField] AudioClip landSound;
     private AudioClip noAudio;
     public AudioSource raceAudSource;
     public AudioClip raceStart;
     public AudioClip raceEnd;
+
+    [Header("Particles")]
+    [SerializeField] ParticleSystem dustParticle;
+    [SerializeField] ParticleSystem jumpParticle;
+    [SerializeField] ParticleSystem landParticle;
+    [SerializeField] bool hasPlayedLandParticle = false;
 
     private Rigidbody rb;
     private AudioSource audSource;
@@ -126,8 +133,9 @@ public class PlayerController : MonoBehaviour
             HandleJump();
             HandleMovement();
             HandleTimers();
-            HandleFootsteps();
         }
+        HandleParticles();
+        CheckInput();
     }
 
     public void HandleMovement()
@@ -167,7 +175,7 @@ public class PlayerController : MonoBehaviour
     void SmoothSpeed(float value)
     {
         var adjustedDirection = Quaternion.AngleAxis(mainCam.eulerAngles.y, Vector3.up) * movement;
-        if (adjustedDirection.magnitude > 0.1f)
+        if (adjustedDirection.magnitude > 0.02f)
         {
             curSpeed = Mathf.SmoothDamp(curSpeed, value, ref velocity, smoothTime);
         }
@@ -289,6 +297,13 @@ public class PlayerController : MonoBehaviour
         if (angle <= inclineLimit)
         {
             isOnGround = true;
+            if (!hasPlayedLandParticle)
+            {
+                landParticle.Play();
+                hasPlayedLandParticle = true;
+                audSource.loop = false;
+                audSource.PlayOneShot(landSound);
+            }
         }
         else
         {
@@ -300,24 +315,42 @@ public class PlayerController : MonoBehaviour
     void OnCollisionExit(Collision collision)
     {
         isOnGround = false;
+        hasPlayedLandParticle = false;
     }
 
-    void HandleFootsteps()
+    void CheckInput()
     {
-        if (isOnGround && !jumpTimer.IsRunning)
+        if (xInput < 0.02f && xInput > -0.02f && yInput < 0.02f && yInput > -0.02f)
         {
-            audSource.loop = true;
-            audSource.clip = runSound;
+            noInput = true;
+        }
+        else
+        {
+            if (canInput)
+            {
+                noInput = false;
+            }
+            else
+            {
+                noInput = true;
+            }            
+        }
+    }
+    
+    void HandleParticles()
+    {
+        if (!noInput && isOnGround)
+        {
+            dustParticle.Play();
+        }
+        else if (noInput && isOnGround || !isOnGround)
+        {
+            dustParticle.Stop();
         }
 
-        if (audSource.clip == runSound && !audSource.isPlaying)
+        if (performedJump && isOnGround)
         {
-            audSource.Play();
-        }
-        if (curSpeed < 0.1 && isOnGround || !isOnGround && !jumpTimer.IsRunning && !performedJump)
-        {
-            audSource.Stop();
-            audSource.clip = noAudio;
+            jumpParticle.Play();
         }
     }
 

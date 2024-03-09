@@ -10,15 +10,18 @@ public class LoadManager : MonoBehaviour
 
     public bool reload = false;
     public bool loadNext = false;
-
+    public bool loadStart = false;
     public bool loadPrev = false;
-
+    public bool loadStored = false;
     public bool loadTitle = false;
+    public bool loadOptions = false;
     public bool isLoading = true;
 
     public bool buffer = true;
 
     public float waitForTitle = 1.3f;
+
+    public int storedScene;
 
     // Start is called before the first frame update
     void Start()
@@ -35,6 +38,13 @@ public class LoadManager : MonoBehaviour
             Application.targetFrameRate = 120;
             StartCoroutine(TitleBuffer());
         }
+
+        if (SceneManager.GetActiveScene().buildIndex == 1)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        storedScene = (PlayerPrefs.GetInt("StoredScene"));
     }
 
     IEnumerator TitleBuffer()
@@ -53,9 +63,9 @@ public class LoadManager : MonoBehaviour
         {
             reload = true;
         }
-        if (Input.GetButton("Back to Title") && SceneManager.GetActiveScene().buildIndex != 0)
+        if (Input.GetButton("Options Menu") && SceneManager.GetActiveScene().buildIndex != 0)
         {
-            loadTitle = true;
+            loadOptions = true;
         }
         if (reload && !isLoading && !buffer)
         {
@@ -65,6 +75,10 @@ public class LoadManager : MonoBehaviour
         {
             StartCoroutine(LoadLevel(SceneManager.GetActiveScene().buildIndex + 1));
         }
+        if (loadStart && !isLoading && !buffer)
+        {
+            StartCoroutine(LoadLevel(2));
+        }
         if (loadPrev && !isLoading && !buffer)
         {
             StartCoroutine(LoadLevel(SceneManager.GetActiveScene().buildIndex - 1));
@@ -72,6 +86,16 @@ public class LoadManager : MonoBehaviour
         if (loadTitle && !isLoading && !buffer)
         {
             StartCoroutine(LoadLevel(0));
+        }
+        if (loadOptions && !isLoading && !buffer)
+        {
+            storedScene = SceneManager.GetActiveScene().buildIndex;
+            PlayerPrefs.SetInt("StoredScene", storedScene);
+            StartCoroutine(LoadLevel(1));
+        }
+        if (loadStored && !isLoading && !buffer)
+        {
+            StartCoroutine(LoadLevel(storedScene));
         }
     }
 

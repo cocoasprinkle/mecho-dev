@@ -45,7 +45,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d17106164767c834ea314f761a755727, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transition: {fileID: 0}
+  transition: {fileID: 8432052115640199590}
+  reload: 0
+  loadNext: 0
+  loadStart: 0
+  loadPrev: 0
+  loadStored: 0
+  loadTitle: 0
+  loadOptions: 0
+  isLoading: 1
+  buffer: 1
+  musicMixer: {fileID: 24100000, guid: 2a275f37261545a48a92aa366bbf4f68, type: 2}
+  soundMixer: {fileID: 24100000, guid: bb7039ead5775e443a2e633d247453ab, type: 2}
+  waitForTitle: 1.3
+  storedScene: 0
 --- !u!1 &8432052115353112410
 GameObject:
   m_ObjectHideFlags: 0

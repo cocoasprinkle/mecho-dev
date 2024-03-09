@@ -5,15 +5,6 @@ using UnityEngine;
 public class FootstepHandler : MonoBehaviour
 {
     private PlayerController pCon;
-    [Header("Grass Footstep Sounds")]
-    [SerializeField] AudioClip stepGrass;
-    [SerializeField] AudioClip runStepGrass;
-    [SerializeField] AudioClip walkStepGrass;
-    [Header("Metal Footstep Sounds")]
-    [SerializeField] AudioClip stepMetal;
-    [SerializeField] AudioClip runStepMetal;
-    [SerializeField] AudioClip walkStepMetal;
-
     private AudioSource audSource;
 
     // Start is called before the first frame update
@@ -23,48 +14,15 @@ public class FootstepHandler : MonoBehaviour
         audSource = GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
-    void OnCollisionStay(Collision collision)
+    void Update()
     {
-        if (collision.gameObject.CompareTag("Grass"))
+        if (pCon.isOnGround && !pCon.noInput && !audSource.isPlaying)
         {
-            Debug.Log("GRASS GRASS GRASS");
-            if (pCon.curSpeed > 15 && !audSource.isPlaying)
-            {
-                audSource.PlayOneShot(runStepGrass);
-            }
-            else if (pCon.curSpeed > 0.5 && !audSource.isPlaying)
-            {
-                audSource.PlayOneShot(walkStepGrass);
-            }
-            else
-            {
-                audSource.PlayOneShot(stepGrass);
-            }
+            audSource.Play();
         }
-        else if (collision.gameObject.CompareTag("Metal"))
+        else if (!pCon.isOnGround || pCon.noInput)
         {
-            if (pCon.curSpeed > 15 && !audSource.isPlaying)
-            {
-                audSource.PlayOneShot(runStepMetal);
-            }
-            else if (pCon.curSpeed > 0.5 && !audSource.isPlaying)
-            {
-                audSource.PlayOneShot(walkStepMetal);
-            }
-            else
-            {
-                audSource.PlayOneShot(stepMetal);
-            }
+            audSource.Stop();
         }
-    }
-    void OnCollisionEnter (Collision collision)
-    {
-        audSource.Play();
-        Debug.Log("Audio Source is working fine");
-    }
-    void OnCollisionExit()
-    {
-        audSource.Stop();
     }
 }
