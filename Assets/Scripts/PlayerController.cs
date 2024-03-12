@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float maxSpeed = 5f;
     [SerializeField] float rotSpeed = 15f;
     [SerializeField] float smoothTime = 0.2f;
-    [SerializeField] float coyoteDuration = 0.1f;
+    [SerializeField] float coyoteDuration = 0.25f;
     [SerializeField] float inclineLimit = 80f;
     [SerializeField] LayerMask groundLayer;
 
@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float yInput;
     [SerializeField] AnimatorStateInfo curClipName;
     [SerializeField] public bool noInput;
+    [SerializeField] public bool inCoyote;
 
     [Header("Sounds")]
     [SerializeField] AudioClip jumpSound;
@@ -128,6 +129,7 @@ public class PlayerController : MonoBehaviour
     // FixedUpdate is called at a fixed rate
     void FixedUpdate()
     {
+        hasPlayedLandParticle = landParticle.isPlaying || isOnGround || coyoteTime.IsRunning;
         if (canInput)
         {
             HandleJump();
@@ -136,6 +138,17 @@ public class PlayerController : MonoBehaviour
         }
         HandleParticles();
         CheckInput();
+        if (!coyoteTime.IsRunning && inCoyote)
+        {
+            isOnGround = false;
+            hasPlayedLandParticle = false;
+            inCoyote = false;
+            if (!jumpTimer.IsRunning && jumpCount == 0)
+            {
+                jumpCount = 1;
+            }
+            
+        }
     }
 
     public void HandleMovement()
@@ -162,6 +175,7 @@ public class PlayerController : MonoBehaviour
     {
         // Move the player
         Vector3 velocity = adjustedDirection * (maxSpeed * Time.fixedDeltaTime);
+        velocity = Vector3.ClampMagnitude(velocity, 22.5f);
         rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
     }
 
@@ -175,9 +189,10 @@ public class PlayerController : MonoBehaviour
     void SmoothSpeed(float value)
     {
         var adjustedDirection = Quaternion.AngleAxis(mainCam.eulerAngles.y, Vector3.up) * movement;
-        if (adjustedDirection.magnitude > 0.02f)
+        if (adjustedDirection.magnitude > 0.2f)
         {
             curSpeed = Mathf.SmoothDamp(curSpeed, value, ref velocity, smoothTime);
+            curSpeed = Mathf.Clamp(curSpeed, 0, 1);
         }
         else
         {
@@ -214,7 +229,15 @@ public class PlayerController : MonoBehaviour
 
         if (performedJump && jumpVel <= 1f)
         {
-            jumpCount = jumpCount + 1;
+            if (jumpVel >= -14f)
+            {
+                jumpCount = jumpCount + 1;
+            }
+            else
+            {
+                jumpCount = 2;
+            }
+            
             jumpTimer.Start();
             anim.SetTrigger("JumpTrig");
             audSource.loop = false;
@@ -300,7 +323,6 @@ public class PlayerController : MonoBehaviour
             if (!hasPlayedLandParticle)
             {
                 landParticle.Play();
-                hasPlayedLandParticle = true;
                 audSource.loop = false;
                 audSource.PlayOneShot(landSound);
             }
@@ -314,8 +336,15 @@ public class PlayerController : MonoBehaviour
     // OnCollsionExit's purpose is to set the "isOnGround" variable to false if the player is not colliding with any objects
     void OnCollisionExit(Collision collision)
     {
+        //coyoteTime.Start();
+        //inCoyote = true;
         isOnGround = false;
         hasPlayedLandParticle = false;
+        inCoyote = false;
+        /*if (!jumpTimer.IsRunning && jumpCount == 0)
+        {
+            jumpCount = 1;
+        }*/
     }
 
     void CheckInput()
