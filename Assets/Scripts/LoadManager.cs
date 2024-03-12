@@ -59,11 +59,11 @@ public class LoadManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButton("Reset") && SceneManager.GetActiveScene().buildIndex != 0)
+        if (Input.GetButton("Reset") && SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex != 1)
         {
             reload = true;
         }
-        if (Input.GetButton("Options Menu") && SceneManager.GetActiveScene().buildIndex != 0)
+        if (Input.GetButton("Options Menu") && SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex != 1)
         {
             loadOptions = true;
         }
