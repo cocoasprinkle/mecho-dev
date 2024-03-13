@@ -189,7 +189,7 @@ public class PlayerController : MonoBehaviour
     void SmoothSpeed(float value)
     {
         var adjustedDirection = Quaternion.AngleAxis(mainCam.eulerAngles.y, Vector3.up) * movement;
-        if (adjustedDirection.magnitude > 0.2f)
+        if (adjustedDirection.magnitude > 0.002f)
         {
             curSpeed = Mathf.SmoothDamp(curSpeed, value, ref velocity, smoothTime);
             curSpeed = Mathf.Clamp(curSpeed, 0, 1);
@@ -349,7 +349,7 @@ public class PlayerController : MonoBehaviour
 
     void CheckInput()
     {
-        if (xInput < 0.02f && xInput > -0.02f && yInput < 0.02f && yInput > -0.02f)
+        if (xInput < 0.002f && xInput > -0.002f && yInput < 0.002f && yInput > -0.002f)
         {
             noInput = true;
         }
