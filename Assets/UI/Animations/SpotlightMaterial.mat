@@ -107,7 +107,7 @@ Material:
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
-    - _Circle_Size: 1
+    - _Circle_Size: 0.23767065
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2

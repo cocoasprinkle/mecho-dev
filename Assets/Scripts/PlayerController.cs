@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
     [Header("Monitor Vars")]
     [SerializeField] public bool canInput = false;
     [SerializeField] public bool isOnGround;
-    [SerializeField] float jumpCount = 2;
+    [SerializeField] public float jumpCount = 2;
     [SerializeField] bool performedJump = false;
     [SerializeField] bool holdingJump = false;
     [SerializeField] float jumpVel;

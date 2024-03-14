@@ -15,9 +15,9 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
   m_Fog: 1
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_FogColor: {r: 0.7924528, g: 0.7924528, b: 0.7924528, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.002
+  m_FogDensity: 0.0022
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.49167854, g: 0.60137063, b: 0.8207547, a: 1}
@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 0.15
   m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.13456747, g: 0.13920216, b: 0.1509434, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 44f6d5eb83dec2b46a77ed9506c5f6e5, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: d61ff197c020eb84b91d5139b4d0c97a, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.5
   m_CustomReflection: {fileID: 8900000, guid: 51c38735842ee2d4ba1f543ddf7dc6eb, type: 3}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.06995129, g: 0.1610603, b: 0.49999952, a: 0.5}
+  m_IndirectSpecularColor: {r: 0.070114434, g: 0.15940294, b: 0.49169976, a: 0.5}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -464,7 +464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 1.075518, z: -18.41715}
+  m_FollowOffset: {x: 0, y: 11.36916, z: -24.93319}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -1049,7 +1049,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 1.075518, z: -18.41715}
+  m_FollowOffset: {x: 0, y: 11.36916, z: -24.93319}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -2464,7 +2464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 1.075518, z: -18.41715}
+  m_FollowOffset: {x: 0, y: 11.36916, z: -24.93319}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
