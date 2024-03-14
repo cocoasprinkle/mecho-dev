@@ -15,6 +15,7 @@ public class LoadManager : MonoBehaviour
     public bool loadStored = false;
     public bool loadTitle = false;
     public bool loadOptions = false;
+    public bool loadTest = false;
     public bool isLoading = true;
 
     public bool buffer = true;
@@ -67,6 +68,17 @@ public class LoadManager : MonoBehaviour
         {
             loadOptions = true;
         }
+        if (Input.GetButton("Test Bind") && SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex != 1)
+        {
+            if (SceneManager.GetActiveScene().buildIndex != 3)
+            {
+                loadTest = true;
+            }
+            if (SceneManager.GetActiveScene().buildIndex == 3)
+            {
+                loadStart = true;
+            }
+        }
         if (reload && !isLoading && !buffer)
         {
              StartCoroutine(LoadLevel(SceneManager.GetActiveScene().buildIndex));
@@ -96,6 +108,10 @@ public class LoadManager : MonoBehaviour
         if (loadStored && !isLoading && !buffer)
         {
             StartCoroutine(LoadLevel(storedScene));
+        }
+        if (loadTest && !isLoading && !buffer)
+        {
+            StartCoroutine(LoadLevel(3));
         }
     }
 
