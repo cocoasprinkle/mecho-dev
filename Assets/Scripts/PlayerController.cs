@@ -15,9 +15,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float maxSpeed = 5f;
     [SerializeField] float rotSpeed = 15f;
     [SerializeField] float smoothTime = 0.2f;
+    [SerializeField] float groundStick = -6f;
     [SerializeField] float coyoteDuration = 0.25f;
     [SerializeField] float inclineLimit = 80f;
-    [SerializeField] LayerMask groundLayer;
 
     [Header("Jump Settings")]
     [SerializeField] float jumpForce = 7f;
@@ -176,7 +176,14 @@ public class PlayerController : MonoBehaviour
         // Move the player
         Vector3 velocity = adjustedDirection * (maxSpeed * Time.fixedDeltaTime);
         velocity = Vector3.ClampMagnitude(velocity, 22.5f);
-        rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
+        if (isOnGround && !Input.GetButton("Jump"))
+        {
+            rb.velocity = new Vector3(velocity.x, groundStick, velocity.z);
+        }
+        else
+        {
+            rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
+        }
     }
 
     void HandleRotation(Vector3 adjustedDirection)
