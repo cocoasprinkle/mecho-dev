@@ -835,7 +835,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.5, z: -20}
+  m_FollowOffset: {x: 0, y: 5.798453, z: -22.32795}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -2502,7 +2502,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.5, z: -20}
+  m_FollowOffset: {x: 0, y: 5.798453, z: -22.32795}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -2661,7 +2661,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.5, z: -20}
+  m_FollowOffset: {x: 0, y: 5.798453, z: -22.32795}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -2835,7 +2835,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1476124111}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
@@ -4168,3 +4168,27 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -462981019419857548, guid: 324e8a40e8309fd44aaa4f000cb19103, type: 3}
+--- !u!114 &2135963742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2135963734}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f284bdb90c3a96847a49418ec6d1a896, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  frames:
+  - {fileID: 2800000, guid: d0fe61152f654b540b425e912ecbd983, type: 3}
+  - {fileID: 2800000, guid: 1527d999c7a94974bb222845d709e278, type: 3}
+  - {fileID: 2800000, guid: 5e1d46a315ce67d4ca2b1facca311eca, type: 3}
+  - {fileID: 2800000, guid: 620055f64a63d7d4b80b66bcdca79ae3, type: 3}
+  - {fileID: 2800000, guid: d1c1f8a151ebb4541ab6dccd25deef89, type: 3}
+  - {fileID: 2800000, guid: 3144f38b141ed7a498e93fcc4334b8ec, type: 3}
+  - {fileID: 2800000, guid: 8cda1b4f6c7efc640809e6b019b4d008, type: 3}
+  - {fileID: 2800000, guid: a115ff9c194d2b242baebf2e6fb4054a, type: 3}
+  - {fileID: 2800000, guid: 9ff8a5d59c36e374f99642d9611c3beb, type: 3}
+  - {fileID: 2800000, guid: a6f1c04f0e766f24eb5d1b7dbf210e21, type: 3}
+  fps: 8
