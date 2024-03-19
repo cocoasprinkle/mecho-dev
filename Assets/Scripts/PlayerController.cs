@@ -46,6 +46,7 @@ public class PlayerController : MonoBehaviour
     public bool isPaused = false;
     public bool canPause = false;
     public bool pauseBuffer = false;
+    [SerializeField] bool pauseJumpCooldown = false;
     [SerializeField] int pauseCount = 0;
 
     [Header("Sounds")]
@@ -113,7 +114,7 @@ public class PlayerController : MonoBehaviour
         audSource.clip = noAudio;
         //Makes the cursor invisible
 
-        Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
         StartCoroutine(StartPauseInputs());
         StartCoroutine(WhenToPause());
@@ -147,6 +148,8 @@ public class PlayerController : MonoBehaviour
         curClipName = anim.GetCurrentAnimatorStateInfo(0);
         if (canInput && Input.GetButton("Options Menu") && canPause && !isPaused && !canvasAnim.IsInTransition(0))
         {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
             isPaused = true;
             canInput = false;
             canPause = false;
@@ -155,8 +158,15 @@ public class PlayerController : MonoBehaviour
         }
         if (canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Canvas Fade In") || canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Hold Out") && !canvasAnim.IsInTransition(0) && !pauseBuffer)
         {
-            canPause = true;
-            Debug.Log("Can Pause!");
+            if (!loader.isLoading)
+            {
+                canPause = true;
+                Debug.Log("Can Pause!");
+            }
+            else
+            {
+                canPause = false;
+            }
         }
         if (Input.GetButton("Options Menu") && canPause && canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Canvas Fade In") && !canvasAnim.IsInTransition(0))
         {
@@ -164,11 +174,24 @@ public class PlayerController : MonoBehaviour
         }
         if (!canInput && !isPaused && canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Canvas Fade In") && !canvasAnim.IsInTransition(0) && canPause && !hasPlayedExplosionParticle)
         {
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = false;
             canPause = false;
             canvasAnim.SetTrigger("Fade Out");
             canInput = true;
             Time.timeScale = 1;
+            if (Input.GetKey("joystick button 0"))
+            {
+                StartCoroutine(PauseJumpCooldown());
+            }
         }
+    }
+
+    IEnumerator PauseJumpCooldown()
+    {
+        pauseJumpCooldown = true;
+        yield return new WaitForSeconds(0.1f);
+        pauseJumpCooldown = false;
     }
 
     // FixedUpdate is called at a fixed rate
@@ -262,7 +285,7 @@ public class PlayerController : MonoBehaviour
             jumpCount = 0;
             jumpTimer.Stop();
         }
-        if (Input.GetButton("Jump"))
+        if (Input.GetButton("Jump") && !pauseJumpCooldown)
         {
             holdingJump = true;
         }

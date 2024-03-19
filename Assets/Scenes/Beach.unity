@@ -846,7 +846,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.5, z: -20}
+  m_FollowOffset: {x: 0, y: 6.844673, z: -22.93499}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -1740,7 +1740,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 0}
+  m_FirstSelected: {fileID: 5527895688217984972}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &882811685
@@ -2560,7 +2560,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.5, z: -20}
+  m_FollowOffset: {x: 0, y: 6.844673, z: -22.93499}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -2713,7 +2713,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.5, z: -20}
+  m_FollowOffset: {x: 0, y: 6.844673, z: -22.93499}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -4597,3 +4597,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 442f9c5e88539014e927badb29b3230b, type: 3}
+--- !u!1 &5527895688217984972 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5527895689389002579, guid: 442f9c5e88539014e927badb29b3230b,
+    type: 3}
+  m_PrefabInstance: {fileID: 5527895688217984971}
+  m_PrefabAsset: {fileID: 0}
