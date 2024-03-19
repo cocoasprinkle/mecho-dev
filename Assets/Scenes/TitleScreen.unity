@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.13456747, g: 0.13920216, b: 0.1509434, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: d61ff197c020eb84b91d5139b4d0c97a, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 44f6d5eb83dec2b46a77ed9506c5f6e5, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 0.5
   m_CustomReflection: {fileID: 8900000, guid: 1c5b152b62d4a4e40ad09884fe92ce82, type: 3}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.070110306, g: 0.15906219, b: 0.49167606, a: 0.5}
+  m_IndirectSpecularColor: {r: 0.06995129, g: 0.1610603, b: 0.49999952, a: 0.5}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1448,7 +1448,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BETA 1.0
+  m_text: BETA 1.1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2509207ae4befcd47bdcdbfc2de06305, type: 2}
   m_sharedMaterial: {fileID: -6549135617441671464, guid: 2509207ae4befcd47bdcdbfc2de06305,

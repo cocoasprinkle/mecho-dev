@@ -9,7 +9,9 @@ public class PlayerController : MonoBehaviour
     // Variables that have [SerializeField] proceeding them can be edited or manipulated in the Inspector, while keeping them private. Headers are used to organise these variables in the Inspector
     [Header("References")]
     [SerializeField] Animator anim;
+    [SerializeField] Animator canvasAnim;
     [SerializeField] CinemachineFreeLook freeLook;
+    [SerializeField] GameObject playerModel;
 
     [Header("Movement Settings")]
     [SerializeField] float maxSpeed = 5f;
@@ -41,10 +43,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] AnimatorStateInfo curClipName;
     [SerializeField] public bool noInput;
     [SerializeField] public bool inCoyote;
+    public bool isPaused = false;
+    public bool canPause = false;
+    public bool pauseBuffer = false;
+    [SerializeField] int pauseCount = 0;
 
     [Header("Sounds")]
     [SerializeField] AudioClip jumpSound;
     [SerializeField] AudioClip landSound;
+    [SerializeField] AudioClip explosionSound;
     private AudioClip noAudio;
     public AudioSource raceAudSource;
     public AudioClip raceStart;
@@ -54,10 +61,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] ParticleSystem dustParticle;
     [SerializeField] ParticleSystem jumpParticle;
     [SerializeField] ParticleSystem landParticle;
+    [SerializeField] ParticleSystem explosionParticle;
     [SerializeField] bool hasPlayedLandParticle = false;
+    [SerializeField] bool hasPlayedExplosionParticle = false;
 
     private Rigidbody rb;
     private AudioSource audSource;
+    private LoadManager loader;
 
     private AnimatorClipInfo curAnimInfo;
     float velocity;
@@ -106,6 +116,8 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = false;
         StartCoroutine(StartPauseInputs());
+        StartCoroutine(WhenToPause());
+        loader = GameObject.Find("LevelLoader").GetComponent<LoadManager>();
     }
 
     IEnumerator StartPauseInputs()
@@ -116,6 +128,15 @@ public class PlayerController : MonoBehaviour
         raceAudSource.PlayOneShot(raceStart, 0.45f);
     }
 
+    IEnumerator WhenToPause()
+    {
+        canPause = false;
+        pauseBuffer = true;
+        yield return new WaitForSeconds(1.5f);
+        canPause = true;
+        pauseBuffer = false;
+    }
+
     // Update is called once per frame
     void Update()
     {      
@@ -124,6 +145,30 @@ public class PlayerController : MonoBehaviour
         yInput = Input.GetAxis("Vertical");
         movement = new Vector3(xInput, 0f, yInput);
         curClipName = anim.GetCurrentAnimatorStateInfo(0);
+        if (canInput && Input.GetButton("Options Menu") && canPause && !isPaused && !canvasAnim.IsInTransition(0))
+        {
+            isPaused = true;
+            canInput = false;
+            canPause = false;
+            Time.timeScale = 0;
+            canvasAnim.SetTrigger("Fade In");
+        }
+        if (canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Canvas Fade In") || canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Hold Out") && !canvasAnim.IsInTransition(0) && !pauseBuffer)
+        {
+            canPause = true;
+            Debug.Log("Can Pause!");
+        }
+        if (Input.GetButton("Options Menu") && canPause && canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Canvas Fade In") && !canvasAnim.IsInTransition(0))
+        {
+            isPaused = false;
+        }
+        if (!canInput && !isPaused && canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Canvas Fade In") && !canvasAnim.IsInTransition(0) && canPause && !hasPlayedExplosionParticle)
+        {
+            canPause = false;
+            canvasAnim.SetTrigger("Fade Out");
+            canInput = true;
+            Time.timeScale = 1;
+        }
     }
 
     // FixedUpdate is called at a fixed rate
@@ -136,6 +181,7 @@ public class PlayerController : MonoBehaviour
             HandleMovement();
             HandleTimers();
         }
+
         HandleParticles();
         CheckInput();
         if (!coyoteTime.IsRunning && inCoyote)
@@ -338,6 +384,25 @@ public class PlayerController : MonoBehaviour
         {
             isOnGround = false;
         }
+        if (collision.gameObject.CompareTag("Death"))
+        {
+            if (!hasPlayedExplosionParticle)
+            {
+                explosionParticle.Play();
+                audSource.PlayOneShot(explosionSound, 0.6f);
+                hasPlayedExplosionParticle = true;
+            }         
+            Destroy(playerModel);
+            rb.velocity = new Vector3(0, 0, 0);
+            canInput = false;
+            StartCoroutine(DeathBuffer());
+        }
+    }
+
+    IEnumerator DeathBuffer()
+    {
+        yield return new WaitForSeconds(1f);
+        loader.reload = true;
     }
 
     // OnCollsionExit's purpose is to set the "isOnGround" variable to false if the player is not colliding with any objects

@@ -9,6 +9,7 @@ TagManager:
   - Metal
   - Time End
   - Item
+  - Death
   layers:
   - Default
   - TransparentFX

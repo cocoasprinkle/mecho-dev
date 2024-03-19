@@ -17,6 +17,7 @@ public class LoadManager : MonoBehaviour
     public bool loadOptions = false;
     public bool loadTest = false;
     public bool isLoading = true;
+    public GameObject player;
 
     public bool buffer = true;
 
@@ -63,10 +64,6 @@ public class LoadManager : MonoBehaviour
         if (Input.GetButton("Reset") && SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex != 1)
         {
             reload = true;
-        }
-        if (Input.GetButton("Options Menu") && SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex != 1)
-        {
-            loadOptions = true;
         }
         if (Input.GetButton("Test Bind") && SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex != 1)
         {
@@ -117,6 +114,7 @@ public class LoadManager : MonoBehaviour
 
     IEnumerator LoadLevel(int levelIndex)
     {
+        Time.timeScale = 1;
         transition.SetTrigger("Out");
         isLoading = true;
         yield return new WaitForSeconds(loadTime);

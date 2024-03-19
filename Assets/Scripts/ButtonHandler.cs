@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ButtonHandler : MonoBehaviour
 {
@@ -13,11 +14,16 @@ public class ButtonHandler : MonoBehaviour
     public bool titleButton;
     
     private LoadManager loader;
+    private PlayerController pCon;
 
     void Start()
     {
         Button b = gameObject.GetComponent<Button>();
         loader = GameObject.Find("LevelLoader").GetComponent<LoadManager>();
+        if (SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex != 1)
+        {
+            pCon = GameObject.Find("Player").GetComponent<PlayerController>();
+        }
         if (nextButton)
         {
             b.onClick.AddListener(delegate() { loader.loadNext = true; });
@@ -32,7 +38,14 @@ public class ButtonHandler : MonoBehaviour
         }
         if (backButton)
         {
-            b.onClick.AddListener(delegate() { loader.loadStored = true; });
+            if (SceneManager.GetActiveScene().buildIndex == 0 || SceneManager.GetActiveScene().buildIndex == 1)
+            {
+                b.onClick.AddListener(delegate () { loader.loadStored = false; });
+            }
+            else
+            {
+                b.onClick.AddListener(delegate () { pCon.isPaused = false; });
+            }
         }
         if (titleButton)
         {
@@ -58,7 +71,7 @@ public class ButtonHandler : MonoBehaviour
         }
         else if (backButton)
         {
-            loader.loadStored = true;
+            pCon.isPaused = false;
             Debug.Log("Clicked back!");
         }
         else if (titleButton)
