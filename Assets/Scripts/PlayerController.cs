@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Animator canvasAnim;
     [SerializeField] CinemachineFreeLook freeLook;
     [SerializeField] GameObject playerModel;
+    [SerializeField] AudioLowPassFilter lowPass;
 
     [Header("Movement Settings")]
     [SerializeField] float maxSpeed = 5f;
@@ -47,7 +48,6 @@ public class PlayerController : MonoBehaviour
     public bool canPause = false;
     public bool pauseBuffer = false;
     [SerializeField] bool pauseJumpCooldown = false;
-    [SerializeField] int pauseCount = 0;
 
     [Header("Sounds")]
     [SerializeField] AudioClip jumpSound;
@@ -61,6 +61,7 @@ public class PlayerController : MonoBehaviour
     [Header("Particles")]
     [SerializeField] ParticleSystem dustParticle;
     [SerializeField] ParticleSystem jumpParticle;
+    [SerializeField] ParticleSystem doubleJumpParticle;
     [SerializeField] ParticleSystem landParticle;
     [SerializeField] ParticleSystem explosionParticle;
     [SerializeField] bool hasPlayedLandParticle = false;
@@ -119,6 +120,7 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(StartPauseInputs());
         StartCoroutine(WhenToPause());
         loader = GameObject.Find("LevelLoader").GetComponent<LoadManager>();
+        lowPass.cutoffFrequency = 22000;
     }
 
     IEnumerator StartPauseInputs()
@@ -153,7 +155,9 @@ public class PlayerController : MonoBehaviour
             isPaused = true;
             canInput = false;
             canPause = false;
+            lowPass.cutoffFrequency = 2200;
             Time.timeScale = 0;
+            audSource.Pause();
             canvasAnim.SetTrigger("Fade In");
         }
         if (canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Canvas Fade In") || canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Hold Out") && !canvasAnim.IsInTransition(0) && !pauseBuffer)
@@ -179,7 +183,9 @@ public class PlayerController : MonoBehaviour
             canPause = false;
             canvasAnim.SetTrigger("Fade Out");
             canInput = true;
+            lowPass.cutoffFrequency = 22000;
             Time.timeScale = 1;
+            audSource.UnPause();
             if (Input.GetKey("joystick button 0"))
             {
                 StartCoroutine(PauseJumpCooldown());
@@ -319,6 +325,14 @@ public class PlayerController : MonoBehaviour
             audSource.loop = false;
             audSource.clip = jumpSound;
             audSource.Stop();
+            if (jumpCount < 2)
+            {
+                audSource.pitch = 1f;
+            }
+            else
+            {
+                audSource.pitch = 1.2f;
+            }
             audSource.PlayOneShot(jumpSound);
         }
         else if (!holdingJump && jumpTimer.IsRunning)
@@ -400,6 +414,8 @@ public class PlayerController : MonoBehaviour
             {
                 landParticle.Play();
                 audSource.loop = false;
+                audSource.Stop();
+                audSource.pitch = 1f;
                 audSource.PlayOneShot(landSound);
             }
         }
@@ -411,7 +427,10 @@ public class PlayerController : MonoBehaviour
         {
             if (!hasPlayedExplosionParticle)
             {
+                lowPass.cutoffFrequency = 2200;
+                landParticle.Stop();
                 explosionParticle.Play();
+                audSource.Stop();
                 audSource.PlayOneShot(explosionSound, 0.6f);
                 hasPlayedExplosionParticle = true;
             }         
@@ -463,6 +482,7 @@ public class PlayerController : MonoBehaviour
     
     void HandleParticles()
     {
+        bool hasPlayedDoubleJumpParticle = false;
         if (!noInput && isOnGround)
         {
             dustParticle.Play();
@@ -475,6 +495,15 @@ public class PlayerController : MonoBehaviour
         if (performedJump && isOnGround)
         {
             jumpParticle.Play();
+        }
+        if (performedJump && jumpCount >= 2 && !hasPlayedDoubleJumpParticle)
+        {
+            doubleJumpParticle.Play();
+            hasPlayedDoubleJumpParticle = true;
+        }
+        if (isOnGround)
+        {
+            hasPlayedDoubleJumpParticle = false;
         }
     }
 

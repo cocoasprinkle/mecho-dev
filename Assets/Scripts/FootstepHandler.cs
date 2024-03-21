@@ -24,5 +24,14 @@ public class FootstepHandler : MonoBehaviour
         {
             audSource.Stop();
         }
+
+        if (pCon.isPaused)
+        {
+            audSource.Pause();
+        }
+        else
+        {
+            audSource.UnPause();
+        }
     }
 }
