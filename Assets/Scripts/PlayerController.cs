@@ -103,6 +103,7 @@ public class PlayerController : MonoBehaviour
         freeLook.LookAt = transform;
         timer = GameObject.Find("Time").GetComponent<UITimer>();
         raceAudSource = GameObject.Find("Main Camera").GetComponent<AudioSource>();
+        lowPass.enabled = false;
 
         // Sets up the position and direction for the free-look camera, relative to the player
         freeLook.OnTargetObjectWarped(transform, transform.position - freeLook.transform.position - Vector3.forward);
@@ -120,7 +121,6 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(StartPauseInputs());
         StartCoroutine(WhenToPause());
         loader = GameObject.Find("LevelLoader").GetComponent<LoadManager>();
-        lowPass.cutoffFrequency = 22000;
     }
 
     IEnumerator StartPauseInputs()
@@ -155,7 +155,7 @@ public class PlayerController : MonoBehaviour
             isPaused = true;
             canInput = false;
             canPause = false;
-            lowPass.cutoffFrequency = 2200;
+            lowPass.enabled = true;
             Time.timeScale = 0;
             audSource.Pause();
             canvasAnim.SetTrigger("Fade In");
@@ -183,7 +183,7 @@ public class PlayerController : MonoBehaviour
             canPause = false;
             canvasAnim.SetTrigger("Fade Out");
             canInput = true;
-            lowPass.cutoffFrequency = 22000;
+            lowPass.enabled = false;
             Time.timeScale = 1;
             audSource.UnPause();
             if (Input.GetKey("joystick button 0"))
@@ -427,7 +427,7 @@ public class PlayerController : MonoBehaviour
         {
             if (!hasPlayedExplosionParticle)
             {
-                lowPass.cutoffFrequency = 2200;
+                lowPass.enabled = true;
                 landParticle.Stop();
                 explosionParticle.Play();
                 audSource.Stop();

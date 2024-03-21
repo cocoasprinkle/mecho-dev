@@ -450,7 +450,7 @@ AudioLowPassFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100608666}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_LowpassResonanceQ: 1
   lowpassLevelCustomCurve:
@@ -458,7 +458,7 @@ AudioLowPassFilter:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 1
+      value: 0.099590726
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -823,7 +823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 8.591812, z: -23.84785}
+  m_FollowOffset: {x: 0, y: 2.283035, z: -19.80469}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -2641,7 +2641,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 8.591812, z: -23.84785}
+  m_FollowOffset: {x: 0, y: 2.283035, z: -19.80469}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -2794,7 +2794,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 8.591812, z: -23.84785}
+  m_FollowOffset: {x: 0, y: 2.283035, z: -19.80469}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
