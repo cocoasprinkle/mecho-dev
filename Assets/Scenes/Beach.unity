@@ -823,7 +823,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.089957, z: -19.62152}
+  m_FollowOffset: {x: 0, y: 8.591812, z: -23.84785}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -2641,7 +2641,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.089957, z: -19.62152}
+  m_FollowOffset: {x: 0, y: 8.591812, z: -23.84785}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -2794,7 +2794,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 4
-  m_FollowOffset: {x: 0, y: 2.089957, z: -19.62152}
+  m_FollowOffset: {x: 0, y: 8.591812, z: -23.84785}
   m_XDamping: 1
   m_YDamping: 1
   m_ZDamping: 1
@@ -4492,6 +4492,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1926721772174842236, guid: 11fa708418266564f8fdec18fecc3aa9,
+        type: 3}
+      propertyPath: timer
+      value: 
+      objectReference: {fileID: 1476124111}
     - target: {fileID: 4800083653199934388, guid: 11fa708418266564f8fdec18fecc3aa9,
         type: 3}
       propertyPath: m_RootOrder
