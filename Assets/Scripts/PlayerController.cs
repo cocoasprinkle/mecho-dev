@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] CinemachineFreeLook freeLook;
     [SerializeField] GameObject playerModel;
     [SerializeField] AudioLowPassFilter lowPass;
+    [SerializeField] AudioSource bgAudio;
+    [SerializeField] AudioSource pauseAudio;
 
     [Header("Movement Settings")]
     [SerializeField] float maxSpeed = 5f;
@@ -44,6 +46,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] AnimatorStateInfo curClipName;
     [SerializeField] public bool noInput;
     [SerializeField] public bool inCoyote;
+    [SerializeField] public int itemCount = 0;
     public bool isPaused = false;
     public bool canPause = false;
     public bool pauseBuffer = false;
@@ -104,6 +107,8 @@ public class PlayerController : MonoBehaviour
         timer = GameObject.Find("Time").GetComponent<UITimer>();
         raceAudSource = GameObject.Find("Main Camera").GetComponent<AudioSource>();
         lowPass.enabled = false;
+        bgAudio.enabled = true;
+        pauseAudio.enabled = false;
 
         // Sets up the position and direction for the free-look camera, relative to the player
         freeLook.OnTargetObjectWarped(transform, transform.position - freeLook.transform.position - Vector3.forward);
@@ -155,9 +160,10 @@ public class PlayerController : MonoBehaviour
             isPaused = true;
             canInput = false;
             canPause = false;
-            lowPass.enabled = true;
             Time.timeScale = 0;
             audSource.Pause();
+            bgAudio.Pause();
+            pauseAudio.enabled = true;
             canvasAnim.SetTrigger("Fade In");
         }
         if (canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Canvas Fade In") || canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Hold Out") && !canvasAnim.IsInTransition(0) && !pauseBuffer)
@@ -165,7 +171,6 @@ public class PlayerController : MonoBehaviour
             if (!loader.isLoading)
             {
                 canPause = true;
-                Debug.Log("Can Pause!");
             }
             else
             {
@@ -183,9 +188,10 @@ public class PlayerController : MonoBehaviour
             canPause = false;
             canvasAnim.SetTrigger("Fade Out");
             canInput = true;
-            lowPass.enabled = false;
             Time.timeScale = 1;
             audSource.UnPause();
+            bgAudio.UnPause();
+            pauseAudio.enabled = false;
             if (Input.GetKey("joystick button 0"))
             {
                 StartCoroutine(PauseJumpCooldown());

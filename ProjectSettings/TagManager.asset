@@ -10,6 +10,8 @@ TagManager:
   - Time End
   - Item
   - Death
+  - Pink Block
+  - Blue Block
   layers:
   - Default
   - TransparentFX
