@@ -10,6 +10,7 @@ public class UIItemCount : MonoBehaviour
     [SerializeField] TMP_Text text;
     public int totalItemCount;
     private GameObject[] getCount;
+    public bool finished;
 
     void Start()
     {
@@ -22,5 +23,11 @@ public class UIItemCount : MonoBehaviour
     void Update()
     {
         text.text = ("Item Count: " + player.itemCount + "/" + totalItemCount);
+        if (player.itemCount == totalItemCount && !finished)
+        {
+            finished = true;
+            player.timer.timerActive = false;
+            player.raceAudSource.PlayOneShot(player.raceEnd);
+        }
     }
 }

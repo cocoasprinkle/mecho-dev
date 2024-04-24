@@ -50,6 +50,8 @@ public class PlayerController : MonoBehaviour
     public bool isPaused = false;
     public bool canPause = false;
     public bool pauseBuffer = false;
+
+    public bool onBed = false;
     [SerializeField] bool pauseJumpCooldown = false;
 
     [Header("Sounds")]
@@ -60,6 +62,7 @@ public class PlayerController : MonoBehaviour
     public AudioSource raceAudSource;
     public AudioClip raceStart;
     public AudioClip raceEnd;
+    [SerializeField] AudioClip bedSound;
 
     [Header("Particles")]
     [SerializeField] ParticleSystem dustParticle;
@@ -77,7 +80,7 @@ public class PlayerController : MonoBehaviour
     private AnimatorClipInfo curAnimInfo;
     float velocity;
     float diveDuration = 0.5f;
-    UITimer timer;
+    public UITimer timer;
 
     // Used for when floats need to be assigned a null value
     const float ZeroF = 0f;
@@ -257,7 +260,7 @@ public class PlayerController : MonoBehaviour
         // Move the player
         Vector3 velocity = adjustedDirection * (maxSpeed * Time.fixedDeltaTime);
         velocity = Vector3.ClampMagnitude(velocity, 22.5f);
-        if (isOnGround && !Input.GetButton("Jump"))
+        if (isOnGround && !Input.GetButton("Jump") && !onBed)
         {
             rb.velocity = new Vector3(velocity.x, groundStick, velocity.z);
         }
@@ -306,7 +309,7 @@ public class PlayerController : MonoBehaviour
             holdingJump = false;
         }
 
-        if (holdingJump && isOnGround && !jumpTimer.IsRunning || holdingJump && !jumpTimer.IsRunning && jumpCount < 2)
+        if (holdingJump && isOnGround && !jumpTimer.IsRunning || holdingJump && !jumpTimer.IsRunning && jumpCount < 2 || onBed && !jumpTimer.IsRunning && isOnGround)
         {
             performedJump = true;
         }
@@ -329,21 +332,33 @@ public class PlayerController : MonoBehaviour
             jumpTimer.Start();
             anim.SetTrigger("JumpTrig");
             audSource.loop = false;
-            audSource.clip = jumpSound;
-            audSource.Stop();
-            if (jumpCount < 2)
+            if (onBed)
             {
-                audSource.pitch = 1f;
+                audSource.clip = bedSound;
+                audSource.Stop();
+                audSource.PlayOneShot(bedSound);
             }
             else
             {
-                audSource.pitch = 1.2f;
+                audSource.clip = jumpSound;
+                audSource.Stop();
+                if (jumpCount < 2)
+                {
+                    audSource.pitch = 1f;
+                }
+                else
+                {
+                   audSource.pitch = 1.2f;
+                }
+                audSource.PlayOneShot(jumpSound);
             }
-            audSource.PlayOneShot(jumpSound);
         }
         else if (!holdingJump && jumpTimer.IsRunning)
         {
-            jumpTimer.Stop();
+            if (!onBed)
+            {
+                jumpTimer.Stop();
+            }
         }
 
         if (jumpTimer.IsRunning)
@@ -352,7 +367,15 @@ public class PlayerController : MonoBehaviour
             if (jumpTimer.Progress > launchPoint)
             {
                 // Calculates the decreasing jump velocity using square roots of the maximum height multiplied by 2 and returning the absolute value of the y value of gravity in the project
-                jumpVel = Mathf.Sqrt(2 * jumpMaxHeight * Mathf.Abs(Physics.gravity.y));
+                if (onBed)
+                {
+                    jumpVel = Mathf.Sqrt(2 * jumpMaxHeight * 10 * Mathf.Abs(Physics.gravity.y));
+                }
+                else
+                {
+                    jumpVel = Mathf.Sqrt(2 * jumpMaxHeight * Mathf.Abs(Physics.gravity.y));
+                }
+                
             }
             else
             {
@@ -452,7 +475,13 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(1f);
         loader.reload = true;
     }
-
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Bed"))
+        {
+            onBed = true;
+        }
+    }
     // OnCollsionExit's purpose is to set the "isOnGround" variable to false if the player is not colliding with any objects
     void OnCollisionExit(Collision collision)
     {
@@ -461,6 +490,7 @@ public class PlayerController : MonoBehaviour
         isOnGround = false;
         hasPlayedLandParticle = false;
         inCoyote = false;
+        onBed = false;
         /*if (!jumpTimer.IsRunning && jumpCount == 0)
         {
             jumpCount = 1;

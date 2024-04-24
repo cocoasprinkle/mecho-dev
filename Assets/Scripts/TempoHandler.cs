@@ -38,7 +38,6 @@ public class TempoHandler : MonoBehaviour
     IEnumerator BeepHandler()
     {
         beepInProgress = true;
-        Debug.Log("Beep Interval = " + beepInterval);
         yield return new WaitForSeconds(beepInterval);
         audSource.PlayOneShot(beepSound, 0.5f);
         beepInProgress = false;
@@ -55,7 +54,6 @@ public class TempoHandler : MonoBehaviour
         {
             blockType = 0;
         }
-        Debug.Log("Block Type = " + blockType);
         audSource.PlayOneShot(switchSound, 0.5f);
         barInProgress = false;
     }

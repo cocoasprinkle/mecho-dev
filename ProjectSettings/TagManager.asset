@@ -12,6 +12,7 @@ TagManager:
   - Death
   - Pink Block
   - Blue Block
+  - Bed
   layers:
   - Default
   - TransparentFX

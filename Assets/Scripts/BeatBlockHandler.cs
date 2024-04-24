@@ -51,7 +51,6 @@ public class BeatBlockHandler : MonoBehaviour
                     collidingWithPlayer = false;
                 }
             }
-            Debug.Log("WOW!");
         }
         else if (tempo.blockType == 1)
         {
@@ -70,7 +69,6 @@ public class BeatBlockHandler : MonoBehaviour
                 meshMat.enabled = true;
                 col.enabled = true;
             }
-            Debug.Log("REAL!");
         }
     }
 }

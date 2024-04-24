@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ObjectHandler : MonoBehaviour
 {
-    public MeshRenderer objMesh;
+    public GameObject[] objMesh;
     public AudioClip collectSound;
     private AudioSource audSource;
     private BoxCollider col;
@@ -27,7 +27,10 @@ public class ObjectHandler : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            objMesh.enabled = false;
+            for (int i = 0; i < objMesh.Length; i++)
+            {
+                objMesh[i].gameObject.GetComponent<MeshRenderer>().enabled = false;
+            }
             col.enabled = false;
             audSource.PlayOneShot(collectSound);
             player.itemCount = player.itemCount + 1;

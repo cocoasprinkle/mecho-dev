@@ -7,7 +7,6 @@ public class GraphicsSettings : MonoBehaviour
     private void Start()
     {
         graphicsDropdown.value = QualitySettings.GetQualityLevel();
-        Debug.Log(graphicsDropdown.value);
         QualitySettings.SetQualityLevel(PlayerPrefs.GetInt("SavedGraphics"));
     }
     public void SetQuality(int qualityIndex)
