@@ -28,7 +28,8 @@ public class UITimer : MonoBehaviour
     }
     IEnumerator TimerTick()
     {
-        yield return new WaitForSeconds(0.016f);
+        // Handles each tick of the timer, the WaitForSeconds return value is just a hasty way to give a return value every time the tick is ran
+        yield return new WaitForSeconds(0f);
         curTime = curTime + Time.deltaTime;
         TimeSpan time = TimeSpan.FromSeconds(curTime);
         if (time.Hours > 0)

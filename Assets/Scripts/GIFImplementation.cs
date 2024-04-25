@@ -14,9 +14,9 @@ public class GIFImplementation : MonoBehaviour {
     }
 
     void Update () {
+        // The index of the material array changes corresponding to the in-game time, multiplied in speed by the fps value (10 by default)
         int index = (int)(Time.time * fps);
         index = index % frames.Length;
-        mat.mainTexture = frames[index]; // usar en planeObjects
-        //GetComponent<RawImage> ().texture = frames [index];
+        mat.mainTexture = frames[index];
     }
 }

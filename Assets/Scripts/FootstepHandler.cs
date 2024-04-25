@@ -16,6 +16,7 @@ public class FootstepHandler : MonoBehaviour
 
     void Update()
     {
+        // Checks if the player is on the ground and inputting a direction, while the audio source isn't already playing
         if (pCon.isOnGround && !pCon.noInput && !audSource.isPlaying)
         {
             audSource.Play();
@@ -24,7 +25,7 @@ public class FootstepHandler : MonoBehaviour
         {
             audSource.Stop();
         }
-
+        // Pauses the audio source while paused
         if (pCon.isPaused)
         {
             audSource.Pause();

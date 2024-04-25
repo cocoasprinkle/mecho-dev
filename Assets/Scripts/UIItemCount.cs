@@ -22,6 +22,7 @@ public class UIItemCount : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Sets a TMP text item to show the item count prefixed by a string detailing the variable and suffixed by the total amount of items in the scene
         text.text = ("Item Count: " + player.itemCount + "/" + totalItemCount);
         if (player.itemCount == totalItemCount && !finished)
         {

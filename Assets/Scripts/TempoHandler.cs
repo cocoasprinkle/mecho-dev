@@ -25,6 +25,7 @@ public class TempoHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // If beeps/bars arent in progress, they are started by these coroutines
         if (!beepInProgress)
         {
             StartCoroutine(BeepHandler());
@@ -37,6 +38,7 @@ public class TempoHandler : MonoBehaviour
 
     IEnumerator BeepHandler()
     {
+        // Handles the beep sound effect and the pauses inbetween playing instances of it
         beepInProgress = true;
         yield return new WaitForSeconds(beepInterval);
         audSource.PlayOneShot(beepSound, 0.5f);
@@ -44,6 +46,7 @@ public class TempoHandler : MonoBehaviour
     }
     IEnumerator ChangeBlocks()
     {
+        // On every full bar, the block type is switched
         barInProgress = true;
         yield return new WaitForSeconds(fullBar);
         if (blockType == 0)

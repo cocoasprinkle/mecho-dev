@@ -20,6 +20,7 @@ public class BeatBlockHandler : MonoBehaviour
 
     void OnCollisionStay(Collision collision)
     {
+        // Keeps track of when the player is colliding with the beat block
         if (collision.gameObject.CompareTag("Player"))
         {
             collidingWithPlayer = true;
@@ -27,12 +28,14 @@ public class BeatBlockHandler : MonoBehaviour
     }
     void OnCollisionExit()
     {
+        // Stops the player from keeping the grounded state when a beat block disables below
         collidingWithPlayer = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        // When the tempo handler changes which set of blocks is visible, this checks which set the corresponding block fits into and then changes the state of the mesh renderer
         if (tempo.blockType == 0)
         {
             if (gameObject.tag == "Blue Block")

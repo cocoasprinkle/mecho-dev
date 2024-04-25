@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float jumpDuration = 0.5f;
     [SerializeField] float jumpMaxHeight = 2f;
     [SerializeField] float gravMod = 3f;
+    [SerializeField] float bedForce = 5f;
 
     [Header("Monitor Vars")]
     [SerializeField] public bool canInput = false;
@@ -133,6 +134,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator StartPauseInputs()
     {
+        // Pauses inputs during the starting transition
         canInput = false;
         yield return new WaitForSeconds(1);
         canInput = true;
@@ -141,6 +143,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator WhenToPause()
     {
+        // Pauses pause inputs during an extended period of the starting transition
         canPause = false;
         pauseBuffer = true;
         yield return new WaitForSeconds(1.5f);
@@ -158,6 +161,7 @@ public class PlayerController : MonoBehaviour
         curClipName = anim.GetCurrentAnimatorStateInfo(0);
         if (canInput && Input.GetButton("Options Menu") && canPause && !isPaused && !canvasAnim.IsInTransition(0))
         {
+            // Pauses inputs and time scale, also fading in the pause menu canvas
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             isPaused = true;
@@ -171,6 +175,7 @@ public class PlayerController : MonoBehaviour
         }
         if (canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Canvas Fade In") || canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Hold Out") && !canvasAnim.IsInTransition(0) && !pauseBuffer)
         {
+            // Stops the player from being able to pause during load transitions
             if (!loader.isLoading)
             {
                 canPause = true;
@@ -182,10 +187,12 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetButton("Options Menu") && canPause && canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Canvas Fade In") && !canvasAnim.IsInTransition(0))
         {
+            // Unpauses when the options menu is pressed again in the pause menu
             isPaused = false;
         }
         if (!canInput && !isPaused && canvasAnim.GetCurrentAnimatorStateInfo(0).IsName("Canvas Fade In") && !canvasAnim.IsInTransition(0) && canPause && !hasPlayedExplosionParticle)
         {
+            // Unpauses inputs when isPaused is set to false during the stationary phase of the canvas animation
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = false;
             canPause = false;
@@ -204,6 +211,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator PauseJumpCooldown()
     {
+        // Stops the player from immediately jumping when unpausing using the jump button
         pauseJumpCooldown = true;
         yield return new WaitForSeconds(0.1f);
         pauseJumpCooldown = false;
@@ -215,6 +223,7 @@ public class PlayerController : MonoBehaviour
         hasPlayedLandParticle = landParticle.isPlaying || isOnGround || coyoteTime.IsRunning;
         if (canInput)
         {
+            // Input logic is activated when the player is allowed to input
             HandleJump();
             HandleMovement();
             HandleTimers();
@@ -222,6 +231,8 @@ public class PlayerController : MonoBehaviour
 
         HandleParticles();
         CheckInput();
+
+        // UNUSED COYOTE TIME FUNCTION
         if (!coyoteTime.IsRunning && inCoyote)
         {
             isOnGround = false;
@@ -334,6 +345,8 @@ public class PlayerController : MonoBehaviour
             audSource.loop = false;
             if (onBed)
             {
+                audSource.pitch = 1f;
+                holdingJump = false;
                 audSource.clip = bedSound;
                 audSource.Stop();
                 audSource.PlayOneShot(bedSound);
@@ -369,7 +382,7 @@ public class PlayerController : MonoBehaviour
                 // Calculates the decreasing jump velocity using square roots of the maximum height multiplied by 2 and returning the absolute value of the y value of gravity in the project
                 if (onBed)
                 {
-                    jumpVel = Mathf.Sqrt(2 * jumpMaxHeight * 10 * Mathf.Abs(Physics.gravity.y));
+                    jumpVel = Mathf.Sqrt(2 * jumpMaxHeight * bedForce * Mathf.Abs(Physics.gravity.y));
                 }
                 else
                 {
@@ -472,6 +485,7 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator DeathBuffer()
     {
+        // Reloads the scene a second after Mecho dies
         yield return new WaitForSeconds(1f);
         loader.reload = true;
     }
@@ -479,6 +493,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Bed"))
         {
+            // Allows bed bounce logic to start on collision with the bed gameObject
             onBed = true;
         }
     }
@@ -490,15 +505,22 @@ public class PlayerController : MonoBehaviour
         isOnGround = false;
         hasPlayedLandParticle = false;
         inCoyote = false;
-        onBed = false;
+        StartCoroutine(BedBuffer());
         /*if (!jumpTimer.IsRunning && jumpCount == 0)
         {
             jumpCount = 1;
         }*/
     }
 
+    IEnumerator BedBuffer()
+    {
+        yield return new WaitForSeconds(0.5f);
+        onBed = false;
+    }
+
     void CheckInput()
     {
+        // Checks if there are no/very insignificant amounts of input (logic made mostly for analog sticks)
         if (xInput < 0.002f && xInput > -0.002f && yInput < 0.002f && yInput > -0.002f)
         {
             noInput = true;
@@ -518,6 +540,7 @@ public class PlayerController : MonoBehaviour
     
     void HandleParticles()
     {
+        // Handles all extra particle logic that isn't handled in other methods
         bool hasPlayedDoubleJumpParticle = false;
         if (!noInput && isOnGround)
         {

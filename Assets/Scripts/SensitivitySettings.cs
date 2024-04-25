@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class SensitivitySettings : MonoBehaviour
 {
+    // THIS IS AN UNUSED SETTING FOR THE OPTIONS MENU!
     [SerializeField] Slider sensitivitySlider;
 
     private void Start()

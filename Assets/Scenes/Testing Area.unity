@@ -1200,9 +1200,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8432052114371388860, guid: b7582cea7cfe0f646bf1c601af7ccba0,
         type: 3}
+      propertyPath: isLoading
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8432052114371388860, guid: b7582cea7cfe0f646bf1c601af7ccba0,
+        type: 3}
       propertyPath: transition
       value: 
       objectReference: {fileID: 1470722832}
+    - target: {fileID: 8432052114371388860, guid: b7582cea7cfe0f646bf1c601af7ccba0,
+        type: 3}
+      propertyPath: loadCredits
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8432052114371388862, guid: b7582cea7cfe0f646bf1c601af7ccba0,
         type: 3}
       propertyPath: m_Name
@@ -1883,7 +1893,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1793816638}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1011336394
 AudioSource:

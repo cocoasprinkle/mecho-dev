@@ -8,6 +8,7 @@ public class LoadManager : MonoBehaviour
     public Animator transition;
     private float loadTime = 1.8f;
 
+    // List of different loading transitions
     public bool reload = false;
     public bool loadNext = false;
     public bool loadStart = false;
@@ -16,6 +17,7 @@ public class LoadManager : MonoBehaviour
     public bool loadTitle = false;
     public bool loadOptions = false;
     public bool loadTest = false;
+    public bool loadCredits = true;
     public bool isLoading = true;
     public GameObject player;
 
@@ -35,6 +37,7 @@ public class LoadManager : MonoBehaviour
         }
         else
         {
+            // Title screen loading transition
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             Application.targetFrameRate = 120;
@@ -51,6 +54,7 @@ public class LoadManager : MonoBehaviour
 
     IEnumerator TitleBuffer()
     {
+        // Buffers the beginning of the opening transition on the title screen
         buffer = true;
         yield return new WaitForSeconds(waitForTitle);
         transition.SetTrigger("In");
@@ -61,21 +65,23 @@ public class LoadManager : MonoBehaviour
 
     void Update()
     {
+        // If certain buttons are presssed, these bools are set to true
         if (Input.GetButton("Reset") && SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex != 1)
         {
             reload = true;
         }
         if (Input.GetButton("Test Bind") && SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex != 1)
         {
-            if (SceneManager.GetActiveScene().buildIndex != 3)
+            if (SceneManager.GetActiveScene().buildIndex != 4)
             {
                 loadTest = true;
             }
-            if (SceneManager.GetActiveScene().buildIndex == 3)
+            if (SceneManager.GetActiveScene().buildIndex == 4)
             {
                 loadStart = true;
             }
         }
+        // Starts a coroutine with different scene arguments corresponding to the transition requested
         if (reload && !isLoading && !buffer)
         {
              StartCoroutine(LoadLevel(SceneManager.GetActiveScene().buildIndex));
@@ -86,7 +92,7 @@ public class LoadManager : MonoBehaviour
         }
         if (loadStart && !isLoading && !buffer)
         {
-            StartCoroutine(LoadLevel(2));
+            StartCoroutine(LoadLevel(3));
         }
         if (loadPrev && !isLoading && !buffer)
         {
@@ -95,6 +101,10 @@ public class LoadManager : MonoBehaviour
         if (loadTitle && !isLoading && !buffer)
         {
             StartCoroutine(LoadLevel(0));
+        }
+        if (loadCredits && !isLoading && !buffer)
+        {
+            StartCoroutine(LoadLevel(2));
         }
         if (loadOptions && !isLoading && !buffer)
         {
@@ -108,12 +118,13 @@ public class LoadManager : MonoBehaviour
         }
         if (loadTest && !isLoading && !buffer)
         {
-            StartCoroutine(LoadLevel(3));
+            StartCoroutine(LoadLevel(4));
         }
     }
 
     IEnumerator LoadLevel(int levelIndex)
     {
+        // Buffers the scene loading until the wipe out transition has finished
         Time.timeScale = 1;
         transition.SetTrigger("Out");
         isLoading = true;
@@ -123,6 +134,7 @@ public class LoadManager : MonoBehaviour
 
     IEnumerator LoadBuffer()
     {
+        // Enables a buffer during the initial wipe in transition, to make sure that no transition start until the current one finishes
         buffer = true;
         yield return new WaitForSeconds(1.5f);
         isLoading = false;

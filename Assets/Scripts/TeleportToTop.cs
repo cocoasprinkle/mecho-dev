@@ -15,6 +15,7 @@ public class TeleportToTop : MonoBehaviour
     // Update is called once per frame
     void OnCollisionEnter(Collision other)
     {
+        // If the player collides with the teleporter object, they will be teleported to the defined destination object
         if (other.gameObject.CompareTag("Player"))
         {
             other.gameObject.transform.position = new Vector3 (teleportToObject.transform.position.x, teleportToObject.transform.position.y, teleportToObject.transform.position.z);

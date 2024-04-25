@@ -9,11 +9,13 @@ public class MusicSettings : MonoBehaviour
 
     private void Start()
     {
+        // Checks what music volume setting the player is currently using
         SetVolume(PlayerPrefs.GetFloat("SavedMusicVolume", 100));
     }
 
     public void SetVolume(float value)
     {
+        // Sets the music volume setting to the value of the slider, refreshing the slider's value and updating it when called
         if (value < 1)
         {
             value = 0.001f;

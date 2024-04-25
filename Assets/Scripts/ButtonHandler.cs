@@ -12,7 +12,9 @@ public class ButtonHandler : MonoBehaviour
     public bool optionsButton;
     public bool backButton;
     public bool titleButton;
-    
+    public bool creditsButton;
+    public bool reloadButton = false;
+
     private LoadManager loader;
     private PlayerController pCon;
 
@@ -20,10 +22,11 @@ public class ButtonHandler : MonoBehaviour
     {
         Button b = gameObject.GetComponent<Button>();
         loader = GameObject.Find("LevelLoader").GetComponent<LoadManager>();
-        if (SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex != 1)
+        if (SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex != 1 && SceneManager.GetActiveScene().buildIndex != 2)
         {
             pCon = GameObject.Find("Player").GetComponent<PlayerController>();
         }
+        // Adds listeners to buttons corresponding to load manager variables, so clicking on them will cause specific loading transitions to be triggered
         if (nextButton)
         {
             b.onClick.AddListener(delegate() { loader.loadNext = true; });
@@ -35,6 +38,10 @@ public class ButtonHandler : MonoBehaviour
         if (optionsButton)
         {
             b.onClick.AddListener(delegate() { loader.loadOptions = true; });
+        }
+        if (creditsButton)
+        {
+            b.onClick.AddListener(delegate () { loader.loadCredits = true; });
         }
         if (backButton)
         {
@@ -49,11 +56,16 @@ public class ButtonHandler : MonoBehaviour
         }
         if (titleButton)
         {
-            b.onClick.AddListener(delegate() { loader.loadTitle = true; });
+            b.onClick.AddListener(delegate () { loader.loadTitle = true; });
+        }
+        if (reloadButton)
+        {
+            b.onClick.AddListener(delegate () { loader.reload = true; });
         }
     }
     void OnClick()
     {
+        // On click, the bools are set to true
         if (nextButton)
         {
             loader.loadNext = true;
@@ -77,7 +89,17 @@ public class ButtonHandler : MonoBehaviour
         else if (titleButton)
         {
             loader.loadTitle = true;
-            Debug.Log("Clicked back!");
+            Debug.Log("Clicked title!");
+        }
+        else if (creditsButton)
+        {
+            loader.loadCredits = true;
+            Debug.Log("Clicked credits!");
+        }
+        else if (reloadButton)
+        {
+            loader.reload = true;
+            Debug.Log("Clicked reload!");
         }
     }
 }
